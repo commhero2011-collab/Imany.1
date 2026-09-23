@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0f766e" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="إيماني" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="المساعد الإيماني والأخلاقي الشامل — تتبّع عبادي وأخلاقي مع تلعيب وتحفيز" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1552,6 +1554,660 @@ h1, h2, h3, h4 { font-weight: 700; line-height: 1.3; }
   box-shadow: 0 0 8px #22c55e;
 }
 
+
+/* Drag-drop steps */
+.step-drop-zone {
+  min-height: 56px;
+  border: 2px dashed var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.step-drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(20,184,166,0.1);
+}
+.step-chip {
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  cursor: grab;
+  font-size: 0.88rem;
+  user-select: none;
+  touch-action: none;
+}
+.step-chip:active { cursor: grabbing; }
+.step-chip.dragging { opacity: 0.5; }
+.step-chip.in-zone {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+
+.ai-key-status {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin: 0.45rem 0 0.6rem; padding: 0.55rem 0.75rem;
+  border-radius: 12px; font-size: 0.85rem; font-weight: 700;
+  border: 1px solid var(--border-card);
+  background: rgba(255,255,255,0.04);
+}
+.ai-key-status .dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  background: #64748b; box-shadow: 0 0 0 3px rgba(100,116,139,0.25);
+}
+.ai-key-status.ok {
+  color: #86efac; border-color: rgba(34,197,94,0.35);
+  background: rgba(34,197,94,0.1);
+}
+.ai-key-status.ok .dot {
+  background: #22c55e; box-shadow: 0 0 8px #22c55e, 0 0 0 3px rgba(34,197,94,0.25);
+}
+.ai-key-status.fail {
+  color: #fca5a5; border-color: rgba(239,68,68,0.35);
+  background: rgba(239,68,68,0.1);
+}
+.ai-key-status.fail .dot {
+  background: #ef4444; box-shadow: 0 0 8px #ef4444, 0 0 0 3px rgba(239,68,68,0.2);
+}
+.ai-key-status.pending {
+  color: #fde68a; border-color: rgba(234,179,8,0.35);
+  background: rgba(234,179,8,0.1);
+}
+.ai-key-status.pending .dot {
+  background: #eab308; box-shadow: 0 0 8px #eab308, 0 0 0 3px rgba(234,179,8,0.2);
+}
+.ai-key-status.empty {
+  color: var(--text-secondary);
+}
+
+
+
+/* ===== معلّم التلاوة ===== */
+.tilawa-mushaf {
+  border-radius: 12px;
+  margin: 0.8rem 0;
+  min-height: 200px;
+  position: relative;
+}
+/* شكل صفحة مصحف كلاسيكي */
+.tilawa-mushaf.style-page {
+  background: linear-gradient(175deg, #fbf6e9 0%, #f3ead3 50%, #efe4c8 100%);
+  color: #1c1917;
+  padding: 1.4rem 1.1rem 1.6rem;
+  border: 3px solid #c4a574;
+  box-shadow:
+    inset 0 0 0 1px rgba(139,105,20,0.25),
+    inset 0 0 30px rgba(180,140,60,0.12),
+    0 8px 24px rgba(0,0,0,0.15);
+}
+.tilawa-mushaf.style-page::before {
+  content: '';
+  position: absolute; inset: 8px;
+  border: 1px solid rgba(139,105,20,0.35);
+  border-radius: 6px;
+  pointer-events: none;
+}
+.tilawa-page-text {
+  font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+  font-size: 1.5rem;
+  line-height: 2.55;
+  text-align: justify;
+  text-align-last: center;
+  direction: rtl;
+  position: relative;
+  z-index: 1;
+}
+.tilawa-page-text .ayah-unit {
+  cursor: pointer;
+}
+.tilawa-page-text .ayah-unit.current {
+  background: rgba(20,184,166,0.22);
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.tilawa-page-text .ayah-unit.done {
+  background: rgba(34,197,94,0.12);
+  border-radius: 4px;
+}
+.tilawa-page-text .ayah-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  margin: 0 0.15rem;
+  border-radius: 50%;
+  border: 1.5px solid #b8956c;
+  background: radial-gradient(circle at 30% 30%, #fff8e7, #e8d5a8);
+  color: #5c4030;
+  font-size: 0.68rem;
+  font-weight: 800;
+  font-family: var(--font-main);
+  vertical-align: middle;
+}
+.tilawa-page-text .ayah-unit.current .ayah-marker {
+  border-color: #0d9488;
+  background: radial-gradient(circle at 30% 30%, #ccfbf1, #5eead4);
+  color: #134e4a;
+}
+/* شكل سطور */
+.tilawa-mushaf.style-lines {
+  background: #f8f5e8;
+  color: #1a1a1a;
+  padding: 1rem 0.8rem;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.tilawa-ayah {
+  font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+  font-size: 1.4rem;
+  line-height: 2.15;
+  text-align: center;
+  padding: 0.55rem 0.4rem;
+  border-radius: 12px;
+  margin: 0.2rem 0;
+  transition: background 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+}
+.tilawa-ayah .num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: rgba(20,184,166,0.2); color: #0f766e;
+  font-size: 0.75rem; font-weight: 800; margin: 0 0.25rem;
+  font-family: var(--font-main);
+}
+.tilawa-ayah.current {
+  background: rgba(20,184,166,0.18);
+  box-shadow: 0 0 0 2px rgba(20,184,166,0.45);
+}
+.tilawa-ayah.done {
+  opacity: 0.8;
+  background: rgba(34,197,94,0.12);
+}
+/* شكل تركيز آية واحدة */
+.tilawa-mushaf.style-focus {
+  background: linear-gradient(175deg, #fbf6e9, #f0e6d0);
+  color: #1c1917;
+  padding: 2rem 1.2rem;
+  border: 2px solid #c4a574;
+  text-align: center;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.tilawa-focus-ayah {
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  font-size: 1.85rem;
+  line-height: 2.4;
+  direction: rtl;
+}
+.tilawa-focus-num {
+  display: inline-flex;
+  width: 2rem; height: 2rem; border-radius: 50%;
+  align-items: center; justify-content: center;
+  border: 2px solid #b8956c;
+  font-size: 0.85rem; font-weight: 800;
+  margin-top: 0.8rem;
+  font-family: var(--font-main);
+}
+.tilawa-style-pick {
+  display: flex; gap: 0.35rem; flex-wrap: wrap;
+  margin: 0.4rem 0 0.6rem;
+}
+.tilawa-style-pick button {
+  flex: 1;
+  min-width: 90px;
+  padding: 0.45rem 0.3rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-card);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-secondary);
+  font-family: var(--font-main);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tilawa-style-pick button.active {
+  border-color: var(--accent);
+  color: var(--accent-light);
+  background: rgba(20,184,166,0.15);
+}
+.tilawa-listen-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+.tilawa-listen-bar .btn-listen {
+  padding: 0.55rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(20,184,166,0.4);
+  background: rgba(20,184,166,0.18);
+  color: var(--accent-light);
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.tilawa-listen-bar .btn-listen.playing {
+  background: rgba(20,184,166,0.35);
+  animation: pulse-rec 1.2s infinite;
+}
+.tilawa-controls {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.tilawa-rec-btn {
+  width: 76px; height: 76px; border-radius: 50%;
+  border: 3px solid var(--danger);
+  background: rgba(239,68,68,0.15);
+  color: var(--danger);
+  font-size: 1.6rem;
+  cursor: pointer;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+}
+.tilawa-rec-btn.recording {
+  background: var(--danger);
+  color: white;
+  animation: pulse-rec 1s infinite;
+}
+@keyframes pulse-rec {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.tilawa-phase {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+  min-height: 1.4rem;
+}
+.tilawa-feedback {
+  margin-top: 0.8rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(20,184,166,0.1);
+  border: 1px solid rgba(20,184,166,0.25);
+  line-height: 1.75;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+.tilawa-score {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+.tilawa-progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 0.5rem 0 0.8rem;
+}
+.tilawa-progress-bar > span {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, var(--accent), #5eead4);
+  border-radius: 99px;
+  transition: width 0.35s ease;
+}
+.tilawa-steps {
+  display: flex; justify-content: center; gap: 0.35rem;
+  margin: 0.4rem 0 0.6rem; flex-wrap: wrap;
+}
+.tilawa-steps span {
+  font-size: 0.72rem; padding: 0.25rem 0.55rem;
+  border-radius: 99px; background: rgba(255,255,255,0.06);
+  color: var(--text-secondary); font-weight: 600;
+}
+.tilawa-steps span.on {
+  background: rgba(20,184,166,0.25);
+  color: var(--accent-light);
+}
+
+.tilawa-listen-row {
+  display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+
+
+
+/* ===== تحسينات عامة ===== */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+.quick-actions button {
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+  padding: 0.85rem 0.4rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.quick-actions button .qa-icon { font-size: 1.55rem; }
+.kids-mode .quick-actions button { padding: 1.1rem 0.4rem; font-size: 0.9rem; }
+.kids-mode .quick-actions button .qa-icon { font-size: 1.9rem; }
+.kids-mode .btn { font-size: 1rem; padding: 0.75rem 1rem; }
+.kids-mode .nav-item .nav-icon { font-size: 1.45rem; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+}
+.stat-pill {
+  text-align: center;
+  padding: 0.65rem 0.3rem;
+  border-radius: 14px;
+  background: rgba(20,184,166,0.1);
+  border: 1px solid rgba(20,184,166,0.2);
+}
+.stat-pill .n { font-size: 1.25rem; font-weight: 800; color: var(--accent-light); }
+.stat-pill .l { font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem; }
+.plan-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.4rem;
+  border-bottom: 1px solid var(--border-card);
+  font-size: 0.88rem;
+}
+.plan-item:last-child { border-bottom: none; }
+.plan-item input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+.focus-mode #bottom-nav,
+.focus-mode .app-header .points-chip,
+.focus-mode .storage-banner { display: none !important; }
+.focus-mode #view-tilawa { padding-bottom: 1rem; }
+.focus-badge {
+  position: sticky; top: 0; z-index: 50;
+  text-align: center; padding: 0.4rem;
+  background: rgba(15,23,42,0.9); color: #fde68a;
+  font-size: 0.8rem; font-weight: 700;
+}
+.ai-disclaimer {
+  font-size: 0.72rem; color: var(--text-secondary);
+  line-height: 1.45; margin: 0.4rem 0 0.6rem;
+  padding: 0.45rem 0.6rem; border-radius: 10px;
+  background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2);
+}
+.more-panel { display: none; }
+.more-panel.open { display: block; }
+
+
+/* ===== خريطة التعلم والمكافآت ===== */
+.learn-map {
+  position: relative;
+  padding: 0.5rem 0.25rem 1rem;
+  overflow-x: auto;
+}
+.learn-map-track {
+  position: relative;
+  min-height: 280px;
+  min-width: 100%;
+}
+.learn-path-line {
+  position: absolute;
+  right: 28px; left: 28px; top: 36px;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(20,184,166,0.15), rgba(20,184,166,0.5), rgba(20,184,166,0.15));
+  border-radius: 4px;
+  z-index: 0;
+}
+.learn-nodes {
+  display: flex;
+  gap: 0.35rem;
+  position: relative;
+  z-index: 1;
+  padding: 0 0.2rem;
+  justify-content: space-between;
+}
+.learn-node {
+  flex: 1;
+  max-width: 76px;
+  text-align: center;
+  cursor: pointer;
+}
+.learn-node .orb {
+  width: 48px; height: 48px;
+  margin: 0 auto 0.35rem;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  border: 3px solid var(--border-card);
+  background: var(--card-bg);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.learn-node.done .orb {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.2);
+  box-shadow: 0 0 12px rgba(34,197,94,0.35);
+}
+.learn-node.current .orb {
+  border-color: var(--accent);
+  background: rgba(20,184,166,0.25);
+  box-shadow: 0 0 16px rgba(20,184,166,0.5);
+  transform: scale(1.12);
+  animation: orb-pulse 1.6s ease-in-out infinite;
+}
+.learn-node.locked .orb {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(20,184,166,0.35); }
+  50% { box-shadow: 0 0 22px rgba(20,184,166,0.65); }
+}
+.learn-node .lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  line-height: 1.25;
+}
+.learn-node.current .lbl { color: var(--accent-light); }
+.learn-node.done .lbl { color: #86efac; }
+.learn-player {
+  position: absolute;
+  top: 18px;
+  width: 28px; height: 28px;
+  margin-left: -14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  z-index: 2;
+  transition: right 0.55s cubic-bezier(.2,.8,.2,1);
+  pointer-events: none;
+}
+.star-ayah { color: #fbbf24; font-size: 0.85rem; margin-right: 0.15rem; }
+.minute-challenge {
+  text-align: center;
+  padding: 1rem;
+}
+.minute-timer {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  font-variant-numeric: tabular-nums;
+  margin: 0.4rem 0;
+}
+.badge-toast {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  background: linear-gradient(135deg, #0f766e, #134e4a);
+  border: 2px solid #5eead4;
+  color: #ecfdf5;
+  padding: 1.2rem 1.5rem;
+  border-radius: 20px;
+  z-index: 9999;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  max-width: 90%;
+}
+.badge-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+.badge-toast .big { font-size: 2.5rem; margin-bottom: 0.3rem; }
+.companion-msg {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(20,184,166,0.1);
+  border: 1px solid rgba(20,184,166,0.25);
+  margin-bottom: 0.6rem;
+}
+.ayah-stars-row {
+  display: flex; flex-wrap: wrap; gap: 0.25rem;
+  justify-content: center; margin: 0.4rem 0;
+}
+.ayah-star-chip {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 99px;
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.35);
+  color: #fde68a;
+}
+
+
+/* ===== المدرب الإيماني ===== */
+.coach-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 0.5rem 0.2rem;
+  margin-bottom: 0.6rem;
+}
+.coach-bubble {
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  max-width: 92%;
+}
+.coach-bubble.ai {
+  background: rgba(20,184,166,0.14);
+  border: 1px solid rgba(20,184,166,0.28);
+  align-self: flex-start;
+  border-bottom-right-radius: 4px;
+}
+.coach-bubble.user {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border-card);
+  align-self: flex-end;
+  border-bottom-left-radius: 4px;
+}
+.coach-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0.7rem;
+}
+.coach-chips button {
+  font-family: var(--font-main);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 0.65rem;
+  border-radius: 99px;
+  border: 1px solid var(--border-card);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.coach-chips button:active {
+  border-color: var(--accent);
+  color: var(--accent-light);
+}
+.coach-input-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: stretch;
+}
+.coach-input-row textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 100px;
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  background: rgba(0,0,0,0.2);
+  color: var(--text-primary);
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  resize: vertical;
+}
+.coach-brief {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(20,184,166,0.12), rgba(15,23,42,0.3));
+  border: 1px solid rgba(20,184,166,0.25);
+  margin-bottom: 0.7rem;
+}
+
+
+.qibla-perm-banner {
+  display: none;
+  margin: 0.6rem 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(234,179,8,0.12);
+  border: 1px solid rgba(234,179,8,0.4);
+  color: #fde68a;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  text-align: right;
+}
+.qibla-perm-banner.show { display: block; }
+.qibla-perm-banner.ok {
+  background: rgba(34,197,94,0.12);
+  border-color: rgba(34,197,94,0.4);
+  color: #86efac;
+}
+.qibla-perm-banner.err {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.4);
+  color: #fca5a5;
+}
+.qibla-status-dot {
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #64748b; margin-left: 0.35rem;
+}
+.qibla-status-dot.on { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+.qibla-status-dot.wait { background: #eab308; }
+.qibla-status-dot.off { background: #ef4444; }
+
 </style>
   <title>المساعد الإيماني والأخلاقي</title>
 </head>
@@ -1585,6 +2241,8 @@ h1, h2, h3, h4 { font-weight: 700; line-height: 1.3; }
       <section id="view-tracker" class="view"></section>
       <section id="view-tasbeeh" class="view"></section>
       <section id="view-quran" class="view"></section>
+      <section id="view-tilawa" class="view"></section>
+      <section id="view-coach" class="view"></section>
       <section id="view-quiz" class="view"></section>
       <section id="view-qibla" class="view"></section>
       <section id="view-leaderboard" class="view"></section>
@@ -1672,10 +2330,83 @@ h1, h2, h3, h4 { font-weight: 700; line-height: 1.3; }
         <input type="text" id="setting-name" class="select-styled" style="width:100%" placeholder="اسمك" />
       </div>
 
+
       <div class="section">
         <div class="section-title">المدينة (لمواقيت الصلاة)</div>
-        <input type="text" id="setting-city" class="select-styled" style="width:100%" placeholder="Cairo" />
+        <select id="setting-city-select" class="select-styled" style="width:100%;margin-bottom:0.4rem" onchange="onCitySelectChange()">
+          <option value="">— اختر مدينة —</option>
+          <optgroup label="مصر">
+            <option value="Cairo|Egypt">القاهرة</option>
+            <option value="Alexandria|Egypt">الإسكندرية</option>
+            <option value="Giza|Egypt">الجيزة</option>
+            <option value="Mansoura|Egypt">المنصورة</option>
+            <option value="Asyut|Egypt">أسيوط</option>
+            <option value="Luxor|Egypt">الأقصر</option>
+            <option value="Aswan|Egypt">أسوان</option>
+            <option value="Tanta|Egypt">طنطا</option>
+            <option value="Port Said|Egypt">بورسعيد</option>
+            <option value="Suez|Egypt">السويس</option>
+          </optgroup>
+          <optgroup label="السعودية">
+            <option value="Riyadh|Saudi Arabia">الرياض</option>
+            <option value="Jeddah|Saudi Arabia">جدة</option>
+            <option value="Makkah|Saudi Arabia">مكة المكرمة</option>
+            <option value="Madinah|Saudi Arabia">المدينة المنورة</option>
+            <option value="Dammam|Saudi Arabia">الدمام</option>
+            <option value="Khobar|Saudi Arabia">الخبر</option>
+            <option value="Taif|Saudi Arabia">الطائف</option>
+            <option value="Abha|Saudi Arabia">أبها</option>
+            <option value="Tabuk|Saudi Arabia">تبوك</option>
+          </optgroup>
+          <optgroup label="الخليج">
+            <option value="Dubai|United Arab Emirates">دبي</option>
+            <option value="Abu Dhabi|United Arab Emirates">أبوظبي</option>
+            <option value="Sharjah|United Arab Emirates">الشارقة</option>
+            <option value="Kuwait|Kuwait">الكويت</option>
+            <option value="Doha|Qatar">الدوحة</option>
+            <option value="Manama|Bahrain">المنامة</option>
+            <option value="Muscat|Oman">مسقط</option>
+          </optgroup>
+          <optgroup label="الشام والعراق">
+            <option value="Amman|Jordan">عمّان</option>
+            <option value="Damascus|Syria">دمشق</option>
+            <option value="Aleppo|Syria">حلب</option>
+            <option value="Beirut|Lebanon">بيروت</option>
+            <option value="Baghdad|Iraq">بغداد</option>
+            <option value="Mosul|Iraq">الموصل</option>
+            <option value="Basra|Iraq">البصرة</option>
+            <option value="Jerusalem|Palestine">القدس</option>
+            <option value="Gaza|Palestine">غزة</option>
+          </optgroup>
+          <optgroup label="المغرب العربي">
+            <option value="Casablanca|Morocco">الدار البيضاء</option>
+            <option value="Rabat|Morocco">الرباط</option>
+            <option value="Algiers|Algeria">الجزائر</option>
+            <option value="Tunis|Tunisia">تونس</option>
+            <option value="Tripoli|Libya">طرابلس</option>
+            <option value="Khartoum|Sudan">الخرطوم</option>
+          </optgroup>
+          <optgroup label="تركيا وأوروبا">
+            <option value="Istanbul|Turkey">إسطنبول</option>
+            <option value="Ankara|Turkey">أنقرة</option>
+            <option value="London|United Kingdom">لندن</option>
+            <option value="Paris|France">باريس</option>
+            <option value="Berlin|Germany">برلين</option>
+          </optgroup>
+          <optgroup label="آسيا">
+            <option value="Jakarta|Indonesia">جاكرتا</option>
+            <option value="Kuala Lumpur|Malaysia">كوالالمبور</option>
+            <option value="Karachi|Pakistan">كراتشي</option>
+            <option value="Lahore|Pakistan">لاهور</option>
+            <option value="Dhaka|Bangladesh">دكا</option>
+          </optgroup>
+          <option value="__custom__">✍️ مدينة أخرى (يدوي)</option>
+        </select>
+        <input type="text" id="setting-city" class="select-styled" style="width:100%;margin-bottom:0.4rem;display:none" placeholder="اسم المدينة بالإنجليزي مثل Cairo" />
+        <input type="text" id="setting-country" class="select-styled" style="width:100%;display:none" placeholder="الدولة بالإنجليزي مثل Egypt" />
+        <button type="button" class="btn btn-ghost btn-sm" style="width:100%;margin-top:0.4rem" onclick="detectCityFromGPS()">📍 استخدم موقعي الحالي للمواقيت</button>
       </div>
+
 
       <div class="section">
         <div class="section-title">الثيم</div>
@@ -1699,6 +2430,35 @@ h1, h2, h3, h4 { font-weight: 700; line-height: 1.3; }
         <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:0.4rem" onclick="importBackup()">⬆️ استيراد نسخة</button>
         <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:0.4rem" onclick="pickBackupFolder()">📁 ربط مجلد للحفظ التلقائي</button>
         <div class="backup-status" id="backup-status">الحفظ يتم تلقائياً في المتصفح + المجلد إن رُبط</div>
+      </div>
+
+
+
+      <div class="section">
+        <div class="section-title">👶 وضع الأطفال وتبسيط</div>
+        <label class="plan-item" style="border:none">
+          <input type="checkbox" id="setting-kids-mode" onchange="document.getElementById('setting-kids-mode').dataset.changed='1'" />
+          <span>وضع أطفال (أزرار أكبر وأبسط)</span>
+        </label>
+        <label style="font-size:0.78rem;color:var(--text-secondary)">عدد آيات الورد اليومي</label>
+        <input type="number" id="setting-wird" class="select-styled" style="width:100%;margin-top:0.3rem" min="1" max="50" value="5" />
+      </div>
+
+      <div class="section">
+        <div class="section-title">🤖 الذكاء الاصطناعي (مجاني)</div>
+        <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.5rem;line-height:1.5">
+          1) افتح
+          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--accent-light)">aistudio.google.com/apikey</a>
+          2) Create API key 3) انسخ المفتاح كاملاً هنا ثم «اختبار المفتاح».
+          المفتاح على جهازك فقط. إن فشل: أنشئ مشروعاً جديداً في AI Studio.
+        </p>
+        <input type="password" id="setting-gemini-key" class="select-styled" style="width:100%;margin-bottom:0.4rem" placeholder="مفتاح Gemini API (اختياري)" autocomplete="off" oninput="onGeminiKeyInput()" />
+        <div class="ai-key-status empty" id="ai-key-status">
+          <span class="dot"></span>
+          <span id="ai-key-status-text">لم يُدخل مفتاح بعد</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:0.4rem" id="btn-test-gemini" onclick="testGeminiKey()">اختبار المفتاح</button>
+        <button type="button" class="btn btn-primary btn-sm" style="width:100%" onclick="generateAIChallenge()">✨ توليد تحدي اليوم بالذكاء</button>
       </div>
 
       <div class="section">
@@ -1759,7 +2519,14 @@ const DEFAULT_DATA = {
     country: 'Egypt',
     calculationMethod: 5,
     adhanEnabled: true,
-    notifications: true
+    notifications: true,
+    geminiApiKey: '',
+    aiEnabled: true,
+    kidsMode: false,
+    simpleHome: true,
+    tilawaReciter: 'ar.alafasy',
+    dailyWirdAyahs: 5,
+    focusMode: false
   },
   tasbeeh: {
     count: 0,
@@ -1786,7 +2553,7 @@ const DEFAULT_DATA = {
   quizStreak: 0
 };
 
-let state = loadState();
+let state = (typeof loadState === 'function') ? loadState() : JSON.parse(JSON.stringify(DEFAULT_DATA));
 let currentView = 'dashboard';
 let prayerTimes = null;
 let nextPrayer = null;
@@ -2088,6 +2855,13 @@ function saveState() {
   } catch (e) {
     console.warn('Save failed', e);
   }
+  // IndexedDB backup (async, non-blocking)
+  clearTimeout(window._idbSaveTimer);
+  window._idbSaveTimer = setTimeout(() => {
+    if (typeof idbSet === 'function') {
+      idbSet('appState', state).catch(e => console.warn('IDB save', e));
+    }
+  }, 400);
   // debounced auto-save to user folder if linked
   clearTimeout(window._autoSaveTimer);
   window._autoSaveTimer = setTimeout(() => {
@@ -2257,7 +3031,7 @@ async function fetchPrayerTimes() {
     console.warn('Online prayer times failed, using cache/offline', e);
   }
 
-  // Fallback to cache
+  // Fallback to cache (prefer today's data)
   try {
     const cached = JSON.parse(localStorage.getItem('cachedPrayerTimes') || 'null');
     if (cached && cached.times) {
@@ -2265,6 +3039,9 @@ async function fetchPrayerTimes() {
       if (cached.hijri) {
         window._hijriStr = `${cached.hijri.day} ${cached.hijri.month?.ar || ''} ${cached.hijri.year} هـ`;
       }
+      if (cached.date === todayKey()) return true;
+      // stale cache — still use temporarily but flag
+      console.warn('Using stale prayer cache from', cached.date);
       return true;
     }
   } catch (_) {}
@@ -2319,9 +3096,12 @@ function updateCountdown() {
   let diff = nextPrayer.minutes - nowMin;
   if (diff < 0) diff += 1440;
 
-  const hrs = Math.floor(diff / 60);
-  const mins = diff % 60;
-  const secs = 59 - now.getSeconds();
+  // precise remaining including seconds
+  const targetTotalSecs = diff * 60 - now.getSeconds();
+  const safeSecs = targetTotalSecs < 0 ? targetTotalSecs + 86400 : targetTotalSecs;
+  const hrs = Math.floor(safeSecs / 3600);
+  const mins = Math.floor((safeSecs % 3600) / 60);
+  const secs = safeSecs % 60;
 
   const el = document.getElementById('countdown');
   if (el) {
@@ -2373,11 +3153,18 @@ function renderDashboard() {
   const challengeDone = state.challenges && state.challenges[todayKey()];
   const html = `
     ${typeof renderStreakBar === 'function' ? renderStreakBar() : ''}
-    <div style="text-align:center;margin-bottom:0.6rem;display:flex;gap:0.4rem;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="enterDriveMode()">🚗 وضع القيادة</button>
-      <button class="btn btn-ghost btn-sm" onclick="switchView('leaderboard')">🏆 الترتيب</button>
-    </div>
+    ${typeof renderQuickActions === 'function' ? renderQuickActions() : ''}
+    <div class="section">${typeof renderCompanionCard === 'function' ? renderCompanionCard() : ''}</div>
+    <div class="section">${typeof renderDailyGoalCard === 'function' ? renderDailyGoalCard() : ''}</div>
+    <div class="section">${typeof renderInstallCard === 'function' ? renderInstallCard() : ''}</div>
+    <div class="section">${typeof renderLearnMap === 'function' ? renderLearnMap() : ''}</div>
+    <div class="section">${typeof renderStarsLogCard === 'function' ? renderStarsLogCard() : ''}</div>
+    <div class="section">${typeof renderMinuteChallengeCard === 'function' ? renderMinuteChallengeCard() : ''}</div>
+    <div class="section">${typeof renderWeeklyStatsCard === 'function' ? renderWeeklyStatsCard() : ''}</div>
+    <div class="section">${typeof renderWeeklyPlanCard === 'function' ? renderWeeklyPlanCard() : ''}</div>
+    <div class="section">${typeof renderDailyWirdCard === 'function' ? renderDailyWirdCard() : ''}</div>
     <div class="section">${typeof renderChestCard === 'function' ? renderChestCard() : ''}</div>
+    <div class="section">${typeof renderAIChallengeCard === 'function' ? renderAIChallengeCard() : ''}</div>
     <div class="section">
       <div class="card prayer-widget">
         <div class="next-prayer-name" id="next-prayer-name">جاري التحميل...</div>
@@ -2667,6 +3454,7 @@ function renderQuran() {
         </select>
         <button class="btn btn-primary btn-sm" onclick="addQuranPage()">+ صفحة للورد</button>
         <button class="btn btn-ghost btn-sm" onclick="fetchFullSurah(document.getElementById('surah-select').value)">📥 تحميل كاملة</button>
+        <button class="btn btn-primary btn-sm" onclick="switchView('tilawa')" style="grid-column:1/-1">🎓 معلّم التلاوة بالذكاء</button>
       </div>
       <div class="audio-bar">
         <select class="reciter-select" id="reciter-select">
@@ -2852,50 +3640,107 @@ function renderStepGameHTML() {
     window._stepGame = { ...game, shuffled, selected: [], correctOrder: game.steps };
   }
   const g = window._stepGame;
+  const remaining = g.shuffled.filter(s => !g.selected.includes(s));
   return `
     <div class="card">
       <div class="section-title">🔢 ${g.title}</div>
-      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.8rem">اضغط على الخطوات بالترتيب الصحيح</p>
-      <div id="step-selected" style="min-height:40px;margin-bottom:0.8rem;display:flex;flex-wrap:wrap;gap:0.4rem">
-        ${g.selected.map((s, i) => `<span class="badge-chip" style="background:var(--accent);color:white">${i + 1}. ${s}</span>`).join('') || '<span style="color:var(--text-secondary);font-size:0.85rem">— اختر بالترتيب —</span>'}
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.8rem">
+        اسحب الخطوات إلى المنطقة بالترتيب الصحيح، أو اضغط عليها
+      </p>
+      <div class="step-drop-zone" id="step-drop-zone"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="onStepDrop(event)">
+        ${g.selected.map((s, i) =>
+          `<span class="step-chip in-zone" draggable="true"
+            ondragstart="onStepDragStart(event,'${s.replace(/'/g, "\\'")}',true)"
+            onclick="undoStep()">${i + 1}. ${s}</span>`
+        ).join('') || '<span style="color:var(--text-secondary);font-size:0.85rem;padding:0.4rem">⬇️ أفلت الخطوات هنا بالترتيب</span>'}
       </div>
       <div style="display:flex;flex-direction:column;gap:0.45rem" id="step-options">
-        ${g.shuffled.filter(s => !g.selected.includes(s)).map(s =>
-          `<button class="quiz-option" onclick="selectStep('${s.replace(/'/g, "\\'")}')">${s}</button>`
-        ).join('')}
+        ${remaining.map(s =>
+          `<div class="step-chip" draggable="true"
+            ondragstart="onStepDragStart(event,'${s.replace(/'/g, "\\'")}',false)"
+            onclick="selectStep('${s.replace(/'/g, "\\'")}')">${s}</div>`
+        ).join('') || '<span style="color:var(--text-secondary);font-size:0.85rem">تم اختيار الكل — تحقق من النتيجة</span>'}
       </div>
       <div style="display:flex;gap:0.5rem;margin-top:1rem">
         <button class="btn btn-ghost btn-sm" style="flex:1" onclick="window._stepGame=null;renderQuiz()">لعبة جديدة</button>
         <button class="btn btn-ghost btn-sm" style="flex:1" onclick="undoStep()">تراجع</button>
+        <button class="btn btn-primary btn-sm" style="flex:1" onclick="checkStepOrder()">تحقق</button>
       </div>
       <div id="step-result" style="margin-top:0.8rem;font-size:0.9rem"></div>
     </div>`;
 }
+
+window._dragStep = null;
+window._dragFromZone = false;
+
+window.onStepDragStart = function (e, step, fromZone) {
+  window._dragStep = step;
+  window._dragFromZone = !!fromZone;
+  e.dataTransfer.setData('text/plain', step);
+  e.dataTransfer.effectAllowed = 'move';
+  if (e.target && e.target.classList) e.target.classList.add('dragging');
+};
+
+window.onStepDrop = function (e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const step = window._dragStep || e.dataTransfer.getData('text/plain');
+  if (!step) return;
+  if (window._dragFromZone) {
+    // reorder inside zone: move to end
+    const g = window._stepGame;
+    if (!g) return;
+    g.selected = g.selected.filter(s => s !== step);
+    g.selected.push(step);
+  } else {
+    selectStep(step);
+    return;
+  }
+  window._dragStep = null;
+  renderQuiz();
+};
 
 window.selectStep = function (step) {
   const g = window._stepGame;
   if (!g || g.selected.includes(step)) return;
   g.selected.push(step);
   if (g.selected.length === g.correctOrder.length) {
-    const ok = g.selected.every((s, i) => s === g.correctOrder[i]);
-    const el = document.getElementById('step-result');
-    if (ok) {
-      addPoints(20, 'ترتيب');
-      awardBadge('quiz_champ');
-      if (el) el.innerHTML = '<span style="color:var(--success)">✓ ترتيب صحيح! أحسنت +20 نقطة</span>';
-    } else {
-      if (el) el.innerHTML = '<span style="color:var(--danger)">✗ الترتيب غير صحيح. جرّب من جديد</span>';
-    }
+    checkStepOrder();
   }
   renderQuiz();
+};
+
+window.checkStepOrder = function () {
+  const g = window._stepGame;
+  if (!g) return;
+  const el = document.getElementById('step-result');
+  if (g.selected.length !== g.correctOrder.length) {
+    if (el) el.innerHTML = '<span style="color:var(--warning)">أكمل ترتيب كل الخطوات أولاً</span>';
+    return;
+  }
+  const ok = g.selected.every((s, i) => s === g.correctOrder[i]);
+  if (ok) {
+    addPoints(20, 'ترتيب');
+    if (typeof awardBadge === 'function') awardBadge('quiz_champ');
+    if (typeof celebrate === 'function') celebrate(40);
+    if (el) el.innerHTML = '<span style="color:var(--success)">✓ ترتيب صحيح! أحسنت +20 نقطة</span>';
+  } else {
+    if (el) el.innerHTML = '<span style="color:var(--danger)">✗ الترتيب غير صحيح. اسحب للتعديل أو تراجع</span>';
+  }
 };
 
 window.undoStep = function () {
   if (window._stepGame && window._stepGame.selected.length) {
     window._stepGame.selected.pop();
+    const el = document.getElementById('step-result');
+    if (el) el.innerHTML = '';
     renderQuiz();
   }
 };
+
 
 window.incrementGoalProgress = function () {
   (state.monthlyGoals || []).forEach(g => {
@@ -2926,194 +3771,301 @@ function renderQibla() {
   document.getElementById('view-qibla').innerHTML = `
     <div class="card qibla-container">
       <div class="section-title" style="justify-content:center">🧭 بوصلة القبلة</div>
-      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">
-        وجّه جهازك أفقياً واسمح بالوصول للمستشعرات
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem;text-align:center">
+        1) اضغط تفعيل  2) اسمح بالإشعارات التالية  3) ضع الهاتف أفقياً بعيداً عن المعدن
       </p>
+      <div class="qibla-perm-banner show" id="qibla-perm-banner">
+        <span class="qibla-status-dot wait" id="qibla-status-dot"></span>
+        <strong>يلزم تفعيل الأذونات:</strong><br>
+        • البوصلة / مستشعر الحركة<br>
+        • الموقع (GPS)<br>
+        اضغط الزر الأخضر بالأسفل للسماح
+      </div>
       <div class="compass-wrapper">
         <div class="compass-dial" id="compass-dial">
-          <div class="kaaba-marker">🕋</div>
+          <div class="compass-n">ش</div>
+          <div class="kaaba-marker" id="kaaba-marker">🕋</div>
           <div class="compass-needle" id="compass-needle"></div>
           <div class="compass-center"></div>
         </div>
       </div>
-      <div id="qibla-info" style="font-size:0.9rem;color:var(--text-secondary)">
-        جاري طلب الموقع...
+      <div id="qibla-angle-big" style="font-size:1.8rem;font-weight:800;color:var(--accent-light);margin:0.4rem 0">—°</div>
+      <div id="qibla-heading" style="font-size:0.85rem;color:var(--text-secondary)">اتجاه الجهاز: —°</div>
+      <div id="qibla-info" style="font-size:0.9rem;color:var(--text-secondary);text-align:center;line-height:1.5;margin-top:0.4rem">
+        اضغط «تفعيل البوصلة» للبدء
       </div>
-      <button class="btn btn-primary" style="margin-top:1rem" onclick="initQibla()">تفعيل البوصلة</button>
+      <button class="btn btn-primary" style="margin-top:1rem;width:100%" id="btn-init-qibla" onclick="initQibla()">🔔 تفعيل البوصلة والأذونات</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:0.5rem;width:100%" onclick="requestQiblaNotifications()">📢 تفعيل إشعارات التذكير بالقبلة</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:0.5rem;width:100%" onclick="setManualLocation()">📍 إدخال الموقع يدوياً</button>
     </div>
     <div class="card" style="margin-top:1rem">
       <div class="section-title">🕌 المساجد القريبة</div>
-      <div id="mosques-list" class="empty-state">اضغط لتفعيل الموقع وعرض المساجد</div>
+      <div id="mosques-list" class="empty-state">فعّل الموقع ثم ابحث</div>
       <button class="btn btn-ghost" style="width:100%;margin-top:0.8rem" onclick="findMosques()">البحث عن مساجد</button>
     </div>
   `;
 }
 
-function renderPlant() {
-  const el = document.getElementById('plant-emoji');
-  if (!el) return;
-  const stage = PLANT_STAGES.find(s => s.stage === state.spiritualPlant.stage) || PLANT_STAGES[1];
-  el.textContent = stage.emoji;
-  el.classList.add('growing');
-  setTimeout(() => el.classList.remove('growing'), 600);
-}
+window._qiblaHandler = null;
+window._qiblaLat = null;
+window._qiblaLng = null;
 
-// -------------------- Actions --------------------
-window.setPrayerStatus = function (key, type) {
-  const log = getTodayLog();
-  const wasCompleted = log.prayers[key].completed;
-  log.prayers[key].type = type;
-  log.prayers[key].completed = type !== 'none';
-  saveState();
-
-  if (!wasCompleted && type !== 'none') {
-    addPoints(type === 'congregation' ? 15 : 10, 'صلاة');
-    if (key === 'fajr' && type === 'congregation') awardBadge('fajr_knight');
-  }
-  renderTracker();
-  if (currentView === 'dashboard') renderDashboard();
+window.setQiblaBanner = function (type, htmlMsg) {
+  const b = document.getElementById('qibla-perm-banner');
+  const dot = document.getElementById('qibla-status-dot');
+  if (!b) return;
+  b.className = 'qibla-perm-banner show' + (type ? ' ' + type : '');
+  b.innerHTML = (dot ? '' : '') + htmlMsg;
+  // re-add dot at start
+  const d = document.createElement('span');
+  d.className = 'qibla-status-dot ' + (type === 'ok' ? 'on' : type === 'err' ? 'off' : 'wait');
+  d.id = 'qibla-status-dot';
+  b.insertBefore(d, b.firstChild);
 };
 
-window.toggleSunnah = function (key) {
-  const log = getTodayLog();
-  log.sunnah[key] = !log.sunnah[key];
-  if (log.sunnah[key]) addPoints(5, 'سنة');
-  saveState();
-  renderTracker();
-};
-
-window.toggleAzkar = function (key) {
-  // Open full azkar reader instead of just toggling
-  if (typeof openAzkar === 'function' && AZKAR_TEXTS[key]) {
-    openAzkar(key);
+window.requestQiblaNotifications = async function () {
+  if (!('Notification' in window)) {
+    showToast('المتصفح لا يدعم الإشعارات');
     return;
   }
-  const log = getTodayLog();
-  log.azkar[key] = !log.azkar[key];
-  if (log.azkar[key]) addPoints(8, 'أذكار');
-  saveState();
-  renderTracker();
-  if (currentView === 'dashboard') renderDashboard();
-};
-
-window.toggleEthic = function (id) {
-  const log = getTodayLog();
-  log.ethics[id] = !log.ethics[id];
-  if (log.ethics[id]) {
-    addPoints(7, 'أخلاق');
-    if (id === 'parents') awardBadge('parents_blessing');
-  }
-  saveState();
-  renderTracker();
-  if (currentView === 'dashboard') renderDashboard();
-};
-
-window.doTasbeeh = function () {
-  state.tasbeeh.count++;
-  state.tasbeeh.total++;
-  if (navigator.vibrate) navigator.vibrate(15);
-
-  if (state.tasbeeh.count >= state.tasbeeh.target) {
-    addPoints(10, 'تسبيح');
-    state.tasbeeh.count = 0;
-    showToast('أحسنت! أكملت الهدف 🎉');
-    if (state.tasbeeh.total >= 100) awardBadge('dhikr_master');
-  }
-  saveState();
-  const el = document.getElementById('tasbeeh-count');
-  if (el) el.textContent = state.tasbeeh.count;
-};
-
-window.resetTasbeeh = function () {
-  state.tasbeeh.count = 0;
-  saveState();
-  const el = document.getElementById('tasbeeh-count');
-  if (el) el.textContent = '0';
-};
-
-window.setTasbeehTarget = function (n) {
-  state.tasbeeh.target = n;
-  saveState();
-  renderTasbeeh();
-};
-
-window.addQuranPage = function () {
-  const log = getTodayLog();
-  log.quran.pagesRead++;
-  addPoints(5, 'قرآن');
-  if (log.quran.pagesRead >= log.quran.targetPages) awardBadge('quran_lover');
-  saveState();
-  showToast(`الورد: ${log.quran.pagesRead}/${log.quran.targetPages} صفحة`);
-  if (currentView === 'dashboard') renderDashboard();
-};
-
-window.answerQuiz = function (index) {
-  const q = window._currentQuiz;
-  if (!q) return;
-  const options = document.querySelectorAll('.quiz-option');
-  options.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === q.correct) btn.classList.add('correct');
-    else if (i === index) btn.classList.add('wrong');
-  });
-  const exp = document.getElementById('quiz-explanation');
-  if (exp) {
-    exp.style.display = 'block';
-    exp.textContent = (index === q.correct ? '✓ إجابة صحيحة! ' : '✗ للأسف خاطئة. ') + q.explanation;
-  }
-  if (index === q.correct) {
-    addPoints(12, 'مسابقة');
+  try {
+    const p = await Notification.requestPermission();
+    if (p === 'granted') {
+      showToast('تم تفعيل الإشعارات ✓');
+      try {
+        new Notification('إيماني — القبلة', {
+          body: 'الإشعارات مفعّلة. افتح تبويب القبلة واضغط «تفعيل البوصلة» عند الحاجة.',
+          tag: 'qibla-perm'
+        });
+      } catch (_) {}
+      if (state.settings) {
+        state.settings.qiblaNotif = true;
+        saveState();
+      }
+    } else {
+      showToast('لم يُسمح بالإشعارات — يمكنك التفعيل من إعدادات المتصفح');
+      setQiblaBanner('err', '<strong>الإشعارات مرفوضة</strong><br>من إعدادات المتصفح → الموقع هذا → الإشعارات: سماح');
+    }
+  } catch (e) {
+    showToast('تعذر طلب الإشعارات');
   }
 };
 
-// -------------------- Qibla --------------------
-window.initQibla = function () {
+window.initQibla = async function () {
+  const info = document.getElementById('qibla-info');
+  const angleBig = document.getElementById('qibla-angle-big');
+  const btn = document.getElementById('btn-init-qibla');
+  if (!info) return;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'جاري طلب الأذونات...'; }
+  setQiblaBanner('', '<strong>جاري طلب الأذونات...</strong><br>قد تظهر نوافذ من النظام — اضغط «سماح» على الكل');
+  showToast('اسمح بالبوصلة والموقع عند ظهور الطلب');
+
+  // 1) Optional browser notification permission (helps remind user)
+  if ('Notification' in window && Notification.permission === 'default') {
+    try {
+      await Notification.requestPermission();
+    } catch (_) {}
+  }
+
+  // 2) iOS / Safari: DeviceOrientation permission MUST be from user gesture
+  let orientOk = false;
+  if (typeof DeviceOrientationEvent !== 'undefined') {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const state = await DeviceOrientationEvent.requestPermission();
+        orientOk = (state === 'granted');
+        if (!orientOk) {
+          setQiblaBanner('err', '<strong>تم رفض إذن البوصلة</strong><br>iPhone: الإعدادات → Safari → الحركة والمستشعر → تشغيل<br>ثم أعد فتح الصفحة واضغط تفعيل مرة أخرى');
+          showToast('يلزم السماح بمستشعر الحركة');
+          if (btn) { btn.disabled = false; btn.textContent = '🔔 إعادة تفعيل البوصلة'; }
+          info.textContent = 'البوصلة مرفوضة — فعّل مستشعر الحركة من الإعدادات';
+          return;
+        }
+        showToast('تم السماح بالبوصلة ✓');
+      } catch (e) {
+        setQiblaBanner('err', '<strong>تعذر طلب البوصلة</strong><br>' + (e.message || e) + '<br>جرّب Safari أو Chrome وحدّث الصفحة');
+        if (btn) { btn.disabled = false; btn.textContent = '🔔 إعادة تفعيل البوصلة'; }
+        return;
+      }
+    } else {
+      orientOk = true; // Android/Chrome usually no prompt
+    }
+  } else {
+    setQiblaBanner('err', '<strong>الجهاز أو المتصفح لا يدعم البوصلة</strong><br>استخدم هاتفاً حقيقياً (ليس كمبيوتر) مع Chrome أو Safari');
+    showToast('لا يوجد مستشعر بوصلة');
+    if (btn) { btn.disabled = false; btn.textContent = '🔔 تفعيل البوصلة والأذونات'; }
+    // still allow location + manual angle display
+  }
+
+  // 3) Geolocation
+  info.textContent = 'جاري تحديد موقعك...';
+  setQiblaBanner('', '<strong>الخطوة 2:</strong> السماح بالموقع (GPS)<br>اضغط سماح عند ظهور النافذة');
+
+  const startCompass = (lat, lng) => {
+    window._qiblaLat = lat;
+    window._qiblaLng = lng;
+    const kaabaLat = 21.422487;
+    const kaabaLng = 39.826206;
+    if (typeof calculateQibla === 'function') {
+      qiblaAngle = calculateQibla(lat, lng, kaabaLat, kaabaLng);
+    } else {
+      // fallback formula
+      const toRad = Math.PI / 180;
+      const φ1 = lat * toRad, φ2 = kaabaLat * toRad;
+      const Δλ = (kaabaLng - lng) * toRad;
+      const y = Math.sin(Δλ) * Math.cos(φ2);
+      const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+      qiblaAngle = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+    if (angleBig) angleBig.textContent = Math.round(qiblaAngle) + '°';
+    info.innerHTML = `اتجاه القبلة من الشمال: <b>${Math.round(qiblaAngle)}°</b><br>
+      موقعك: ${lat.toFixed(4)}, ${lng.toFixed(4)}<br>
+      <span style="font-size:0.8rem">ضع الهاتف أفقياً — السهم يشير للقبلة</span>`;
+
+    const marker = document.getElementById('kaaba-marker');
+    if (marker) {
+      marker.style.transform = `translate(-50%, -50%) rotate(${qiblaAngle}deg) translateY(-95px) rotate(${-qiblaAngle}deg)`;
+    }
+
+    if (window._qiblaHandler) {
+      window.removeEventListener('deviceorientation', window._qiblaHandler, true);
+      window.removeEventListener('deviceorientationabsolute', window._qiblaHandler, true);
+    }
+
+    let lastHeading = null;
+    let gotReading = false;
+    window._qiblaHandler = function (e) {
+      let heading = null;
+      if (e.webkitCompassHeading != null && !isNaN(e.webkitCompassHeading)) {
+        heading = e.webkitCompassHeading;
+      } else if (typeof e.absolute === 'boolean' && e.absolute && e.alpha != null) {
+        heading = (360 - e.alpha + 360) % 360;
+      } else if (e.alpha != null) {
+        heading = (360 - e.alpha + 360) % 360;
+      }
+      if (heading == null || isNaN(heading)) return;
+      gotReading = true;
+      deviceHeading = heading;
+      lastHeading = heading;
+      const rotation = (qiblaAngle - heading + 360) % 360;
+      const needle = document.getElementById('compass-needle');
+      const dial = document.getElementById('compass-dial');
+      if (needle) needle.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+      if (dial) dial.style.transform = `rotate(${-heading}deg)`;
+      const hh = document.getElementById('qibla-heading');
+      if (hh) hh.textContent = 'اتجاه الجهاز: ' + Math.round(heading) + '° · القبلة: ' + Math.round(qiblaAngle) + '°';
+    };
+
+    window.addEventListener('deviceorientationabsolute', window._qiblaHandler, true);
+    window.addEventListener('deviceorientation', window._qiblaHandler, true);
+
+    setQiblaBanner('ok', '<strong>تم التفعيل ✓</strong><br>حرّك الهاتف ببطء أفقياً. إن لم تتحرك البوصلة: أبعده عن المغناطيس/الجراب المعدني وعدّل المعايرة.');
+    if (btn) { btn.disabled = false; btn.textContent = '✓ البوصلة تعمل — إعادة المعايرة'; }
+    showToast('البوصلة جاهزة — حرّك الهاتف');
+
+    // If no orientation events after 4s, notify
+    setTimeout(() => {
+      if (!gotReading) {
+        setQiblaBanner('err', '<strong>لم تصل بيانات البوصلة</strong><br>• استخدم هاتفاً وليس كمبيوتر<br>• Chrome/Safari فقط<br>• أعد الضغط على تفعيل<br>• على Android: تأكد أن «الموقع الدقيق» و«الاستشعار» مفعّلان');
+        showToast('لا قراءة من المستشعر — راجع الأذونات');
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            new Notification('إيماني — البوصلة', {
+              body: 'لم تُستلم قراءة. افتح تبويب القبلة وأعد التفعيل مع السماح بالأذونات.',
+              tag: 'qibla-fail'
+            });
+          } catch (_) {}
+        }
+      }
+    }, 4000);
+  };
+
+  const onGeoError = (err) => {
+    const msg = err && err.code === 1 ? 'رفضت إذن الموقع' :
+      err && err.code === 2 ? 'تعذر تحديد الموقع' :
+      err && err.code === 3 ? 'انتهت مهلة الموقع' : 'خطأ موقع';
+    setQiblaBanner('err', '<strong>' + msg + '</strong><br>اضغط «إدخال الموقع يدوياً» أو أعد المحاولة بعد السماح من إعدادات المتصفح');
+    info.textContent = msg + ' — يمكنك الإدخال اليدوي';
+    showToast(msg);
+    if (btn) { btn.disabled = false; btn.textContent = '🔔 إعادة تفعيل البوصلة'; }
+    // still try compass with last known or Cairo default for angle
+    if (window._qiblaLat != null) startCompass(window._qiblaLat, window._qiblaLng);
+  };
+
   if (!navigator.geolocation) {
-    document.getElementById('qibla-info').textContent = 'المتصفح لا يدعم تحديد الموقع';
+    onGeoError({ code: 2 });
     return;
   }
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      // Kaaba coordinates
-      const kaabaLat = 21.4225;
-      const kaabaLng = 39.8262;
-      qiblaAngle = calculateQibla(lat, lng, kaabaLat, kaabaLng);
-      document.getElementById('qibla-info').textContent =
-        `اتجاه القبلة: ${Math.round(qiblaAngle)}° من الشمال`;
-
-      // Device orientation
-      if (window.DeviceOrientationEvent) {
-        const handler = (e) => {
-          let heading = e.alpha;
-          if (e.webkitCompassHeading !== undefined) {
-            heading = e.webkitCompassHeading;
-          }
-          if (heading != null) {
-            deviceHeading = heading;
-            const needle = document.getElementById('compass-needle');
-            const dial = document.getElementById('compass-dial');
-            if (needle) {
-              const rotation = qiblaAngle - deviceHeading;
-              needle.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
-            }
-          }
-        };
-        window.addEventListener('deviceorientation', handler, true);
-        // iOS permission
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission().then(s => {
-            if (s === 'granted') window.addEventListener('deviceorientation', handler, true);
-          }).catch(console.warn);
-        }
-      }
-    },
-    (err) => {
-      document.getElementById('qibla-info').textContent = 'تعذر الحصول على الموقع: ' + err.message;
-    },
-    { enableHighAccuracy: true }
+    (pos) => startCompass(pos.coords.latitude, pos.coords.longitude),
+    onGeoError,
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
   );
+};
+
+window.setManualLocation = function () {
+  const lat = parseFloat(prompt('خط العرض (Latitude) مثل 30.04', window._qiblaLat || state.settings?.lat || '30.0444'));
+  const lng = parseFloat(prompt('خط الطول (Longitude) مثل 31.23', window._qiblaLng || state.settings?.lng || '31.2357'));
+  if (isNaN(lat) || isNaN(lng)) {
+    showToast('إحداثيات غير صالحة');
+    return;
+  }
+  state.settings.lat = lat;
+  state.settings.lng = lng;
+  saveState();
+  // reuse start logic via geolocation mock
+  const kaabaLat = 21.422487, kaabaLng = 39.826206;
+  qiblaAngle = calculateQibla(lat, lng, kaabaLat, kaabaLng);
+  window._qiblaLat = lat;
+  window._qiblaLng = lng;
+  const angleBig = document.getElementById('qibla-angle-big');
+  if (angleBig) angleBig.textContent = Math.round(qiblaAngle) + '°';
+  const info = document.getElementById('qibla-info');
+  if (info) info.textContent = `قبلة يدوية: ${Math.round(qiblaAngle)}° — الآن فعّل البوصلة`;
+  // trigger compass listeners without GPS
+  initQiblaWithCoords(lat, lng);
+};
+
+window.initQiblaWithCoords = async function (lat, lng) {
+  // Same as startCompass path - call init after setting coords by temporarily mocking
+  // Simpler: duplicate orientation bind
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      await DeviceOrientationEvent.requestPermission();
+    } catch (_) {}
+  }
+  qiblaAngle = calculateQibla(lat, lng, 21.422487, 39.826206);
+  const angleBig = document.getElementById('qibla-angle-big');
+  if (angleBig) angleBig.textContent = Math.round(qiblaAngle) + '°';
+
+  if (window._qiblaHandler) {
+    window.removeEventListener('deviceorientation', window._qiblaHandler, true);
+    window.removeEventListener('deviceorientationabsolute', window._qiblaHandler, true);
+  }
+  window._qiblaHandler = function (e) {
+    let heading = null;
+    if (e.webkitCompassHeading != null && !isNaN(e.webkitCompassHeading)) heading = e.webkitCompassHeading;
+    else if (e.alpha != null) heading = (360 - e.alpha) % 360;
+    if (heading == null) return;
+    deviceHeading = heading;
+    const needle = document.getElementById('compass-needle');
+    const dial = document.getElementById('compass-dial');
+    const marker = document.getElementById('kaaba-marker');
+    if (needle) needle.style.transform = `translate(-50%, -100%) rotate(${qiblaAngle - heading}deg)`;
+    if (dial) dial.style.transform = `rotate(${-heading}deg)`;
+    if (marker) marker.style.transform = `translate(-50%, -50%) rotate(${qiblaAngle}deg) translateY(-95px) rotate(${heading - qiblaAngle}deg)`;
+    const info2 = document.getElementById('qibla-info');
+    if (info2) {
+      const diff = ((qiblaAngle - heading) % 360 + 360) % 360;
+      const aligned = diff < 8 || diff > 352;
+      info2.innerHTML = `قبلة: <b>${Math.round(qiblaAngle)}°</b> | جهاز: <b>${Math.round(heading)}°</b><br>${aligned ? '<span style="color:var(--success)">✓ تواجه القبلة</span>' : 'أدِر الجهاز'}`;
+    }
+  };
+  window.addEventListener('deviceorientationabsolute', window._qiblaHandler, true);
+  window.addEventListener('deviceorientation', window._qiblaHandler, true);
+  showToast('بوصلة يدوية مفعّلة');
 };
 
 function calculateQibla(lat, lng, kLat, kLng) {
@@ -3121,11 +4073,12 @@ function calculateQibla(lat, lng, kLat, kLng) {
   const φ1 = lat * toRad;
   const φ2 = kLat * toRad;
   const Δλ = (kLng - lng) * toRad;
-  const y = Math.sin(Δλ);
-  const x = Math.cos(φ1) * Math.tan(φ2) - Math.sin(φ1) * Math.cos(Δλ);
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
   let θ = Math.atan2(y, x) * (180 / Math.PI);
   return (θ + 360) % 360;
 }
+
 
 window.findMosques = async function () {
   const list = document.getElementById('mosques-list');
@@ -3194,6 +4147,8 @@ function switchView(view) {
   else if (view === 'tracker') renderTracker();
   else if (view === 'tasbeeh') renderTasbeeh();
   else if (view === 'quran') renderQuran();
+  else if (view === 'tilawa') renderTilawaTeacher();
+  else if (view === 'coach') renderCoach();
   else if (view === 'quiz') renderQuiz();
   else if (view === 'qibla') renderQibla();
   else if (view === 'leaderboard') renderLeaderboard();
@@ -3205,7 +4160,44 @@ function openSettings() {
   document.querySelectorAll('.theme-opt').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.theme === state.userProfile.theme);
   });
-  document.getElementById('setting-city').value = state.settings.city;
+  const nameEl = document.getElementById('setting-name');
+  if (nameEl) nameEl.value = state.userProfile.name || '';
+  const gemEl = document.getElementById('setting-gemini-key');
+  if (gemEl) gemEl.value = state.settings.geminiApiKey || '';
+  const kidsEl = document.getElementById('setting-kids-mode');
+  if (kidsEl) kidsEl.checked = !!(state.settings && state.settings.kidsMode);
+  const wirdEl = document.getElementById('setting-wird');
+  if (wirdEl) wirdEl.value = (state.settings && state.settings.dailyWirdAyahs) || 5;
+  setTimeout(() => {
+    if (typeof updateGeminiKeyStatus !== 'function') return;
+    if (state.settings._geminiVerified && state.settings.geminiApiKey) {
+      updateGeminiKeyStatus('ok', state.settings._geminiModel || '');
+    } else if (state.settings.geminiApiKey) {
+      updateGeminiKeyStatus('saved');
+    } else {
+      updateGeminiKeyStatus('empty');
+    }
+  }, 50);
+  const cityEl = document.getElementById('setting-city');
+  if (cityEl) cityEl.value = state.settings.city || 'Cairo';
+  const countryEl = document.getElementById('setting-country');
+  if (countryEl) countryEl.value = state.settings.country || 'Egypt';
+  const sel = document.getElementById('setting-city-select');
+  if (sel) {
+    const want = (state.settings.city || '') + '|' + (state.settings.country || '');
+    let found = false;
+    for (const opt of sel.options) {
+      if (opt.value === want) { sel.value = want; found = true; break; }
+    }
+    if (!found && state.settings.city) {
+      sel.value = '__custom__';
+      if (cityEl) cityEl.style.display = 'block';
+      if (countryEl) countryEl.style.display = 'block';
+    } else {
+      if (cityEl) cityEl.style.display = 'none';
+      if (countryEl) countryEl.style.display = 'none';
+    }
+  }
   document.getElementById('setting-name').value = state.userProfile.name;
   const mini = document.getElementById('settings-stats-mini');
   if (mini) {
@@ -3237,12 +4229,30 @@ window.selectTheme = function (theme) {
 
 window.saveSettings = function () {
   const name = document.getElementById('setting-name').value.trim() || 'المؤمن';
-  const city = document.getElementById('setting-city').value.trim() || 'Cairo';
+  const gemKey = (document.getElementById('setting-gemini-key')?.value || '').trim();
+  state.settings.geminiApiKey = gemKey;
+  const kidsEl = document.getElementById('setting-kids-mode');
+  if (kidsEl) state.settings.kidsMode = !!kidsEl.checked;
+  const wirdEl = document.getElementById('setting-wird');
+  if (wirdEl) state.settings.dailyWirdAyahs = Math.max(1, parseInt(wirdEl.value, 10) || 5);
+  if (typeof applyKidsMode === 'function') applyKidsMode();
+  if (typeof ensureFunMapState === 'function') ensureFunMapState();
+  if (typeof evalLearnProgress === 'function') evalLearnProgress();
+  const sel = document.getElementById('setting-city-select');
+  let city = 'Cairo', country = 'Egypt';
+  if (sel && sel.value && sel.value !== '__custom__') {
+    const parts = sel.value.split('|');
+    city = parts[0]; country = parts[1] || 'Egypt';
+  } else {
+    city = (document.getElementById('setting-city')?.value || '').trim() || 'Cairo';
+    country = (document.getElementById('setting-country')?.value || '').trim() || 'Egypt';
+  }
   state.userProfile.name = name;
   state.settings.city = city;
+  state.settings.country = country;
   saveState();
   closeSettings();
-  showToast('تم حفظ الإعدادات');
+  showToast('تم الحفظ: ' + city + ', ' + country);
   fetchPrayerTimes().then(() => {
     if (currentView === 'dashboard') renderDashboard();
   });
@@ -3606,62 +4616,166 @@ const _loadSurahOrig = typeof loadSurah === 'function' ? loadSurah : null;
 window._mediaRecorder = null;
 window._recChunks = [];
 
+
+// Enhanced recitation with Web Speech API when available
 window.toggleRecitation = async function () {
   const btn = document.getElementById('recite-btn');
   const wave = document.getElementById('recite-wave');
   const feedback = document.getElementById('recite-feedback');
   if (!btn) return;
 
+  // Stop if already recording
   if (window._mediaRecorder && window._mediaRecorder.state === 'recording') {
     window._mediaRecorder.stop();
+    return;
+  }
+  if (window._recognition && window._recognitionActive) {
+    try { window._recognition.stop(); } catch (_) {}
+    window._recognitionActive = false;
     btn.classList.remove('recording');
     if (wave) wave.classList.remove('active');
     return;
   }
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    window._recChunks = [];
-    const mr = new MediaRecorder(stream);
-    window._mediaRecorder = mr;
-    mr.ondataavailable = (e) => { if (e.data.size) window._recChunks.push(e.data); };
-    mr.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      // Mock AI feedback (no external speech API key in offline-first demo)
-      const tips = [
-        'حاول إشباع المدود قليلاً أكثر.',
-        'مخارج الحروف جيدة — حافظ على الترتيب.',
-        'انتبه لصفة القلقلة في حرف القاف.',
-        'التجويد مقبول؛ ركّز على الغنة في النون الساكنة.',
-        'أداء حسن — واصل التمرين يومياً.'
-      ];
-      const tip = tips[Math.floor(Math.random() * tips.length)];
-      const score = 70 + Math.floor(Math.random() * 25);
-      if (feedback) {
-        feedback.innerHTML = `<div style="margin-top:0.8rem;padding:0.8rem;border-radius:10px;background:rgba(20,184,166,0.12)">
-          <strong style="color:var(--accent-light)">نتيجة تقديرية: ${score}%</strong>
-          <p style="font-size:0.9rem;margin-top:0.4rem;color:var(--text-secondary)">${tip}</p>
-          <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.4rem">* تحليل تجريبي محلي — للربط مع API حقيقي لاحقاً</p>
-        </div>`;
-      }
-      addPoints(5, 'تلاوة');
-      showToast('تم تحليل التلاوة');
-    };
-    mr.start();
-    btn.classList.add('recording');
-    if (wave) wave.classList.add('active');
-    if (feedback) feedback.innerHTML = '<p style="color:var(--text-secondary)">جاري التسجيل... اضغط مجدداً للإيقاف</p>';
-  } catch (e) {
-    showToast('يلزم السماح بالميكروفون');
-    console.warn(e);
+  const ref = getReferenceAyah();
+  const hasGemini = !!getGeminiKey();
+
+  // Path A: MediaRecorder + Gemini audio (best free online)
+  if (hasGemini && navigator.mediaDevices?.getUserMedia) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      window._recChunks = [];
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus'
+        : (MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '');
+      const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      window._mediaRecorder = mr;
+      mr.ondataavailable = (e) => { if (e.data && e.data.size) window._recChunks.push(e.data); };
+      mr.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        btn.classList.remove('recording');
+        if (wave) wave.classList.remove('active');
+        const blob = new Blob(window._recChunks, { type: mr.mimeType || 'audio/webm' });
+        if (feedback) feedback.innerHTML = '<p style="color:var(--text-secondary)">جاري التحليل عبر Gemini...</p>';
+        try {
+          const b64 = await blobToBase64(blob);
+          const prompt = `أنت معلّم قرآن لطيف. المستخدم تلا الآية التالية من سورة ${ref.name} رقم ${ref.n}:
+«${ref.text}»
+
+استمع للتسجيل الصوتي المرفق.
+1) اكتب ما سمعتَه تقريباً بالعربية.
+2) قارن بالآية المرجعية واذكر إن كانت القراءة صحيحة أو أين الخطأ في الكلمات.
+3) أعطِ ملاحظة تجويد عامة قصيرة جداً (مخرج حرف أو مد إن لزم).
+4) أعطِ تقديراً من 100.
+أجب بالعربية الفصحى المبسطة في 4-6 أسطر فقط.`;
+          const analysis = await callGeminiWithAudio(b64, (mr.mimeType || 'audio/webm').split(';')[0], prompt);
+          if (feedback) {
+            feedback.innerHTML = `<div style="margin-top:0.8rem;padding:0.9rem;border-radius:12px;background:rgba(20,184,166,0.12);line-height:1.7;font-size:0.92rem;white-space:pre-wrap">${analysis}</div>`;
+          }
+          addPoints(12, 'تلاوة-AI');
+          showToast('تم تحليل التلاوة ✨');
+        } catch (e) {
+          console.warn(e);
+          if (feedback) feedback.innerHTML = `<p style="color:var(--danger)">تعذر Gemini: ${e.message || e}. جارٍ التحويل للوضع المحلي...</p>`;
+          // fallback speech
+          startWebSpeechRecitation(ref, btn, wave, feedback);
+        }
+      };
+      mr.start();
+      btn.classList.add('recording');
+      if (wave) wave.classList.add('active');
+      if (feedback) feedback.innerHTML = `<p style="color:var(--text-secondary)">اقرأ الآية ثم اضغط الإيقاف<br><strong style="color:var(--accent-light)">${ref.text}</strong></p>`;
+      return;
+    } catch (e) {
+      console.warn('media+gemini fail', e);
+    }
   }
+
+  // Path B: Web Speech API (free online via browser)
+  startWebSpeechRecitation(ref, btn, wave, feedback);
 };
 
+function startWebSpeechRecitation(ref, btn, wave, feedback) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('المتصفح لا يدعم التعرف على الكلام — استخدم Chrome مع مفتاح Gemini');
+    return;
+  }
+  try {
+    const rec = new SR();
+    window._recognition = rec;
+    rec.lang = 'ar-SA';
+    rec.interimResults = false;
+    rec.maxAlternatives = 3;
+    rec.onstart = () => {
+      window._recognitionActive = true;
+      btn.classList.add('recording');
+      if (wave) wave.classList.add('active');
+      if (feedback) feedback.innerHTML = `<p style="color:var(--text-secondary)">جاري الاستماع... اقرأ:<br><strong>${ref.text}</strong></p>`;
+    };
+    rec.onresult = async (event) => {
+      const transcript = event.results[0][0].transcript || '';
+      const cmp = compareAyah(transcript, ref.text);
+      let extra = '';
+      if (getGeminiKey()) {
+        try {
+          extra = await callGeminiText(
+            `الآية المرجعية: ${ref.text}\nما قاله المستخدم: ${transcript}\nالدرجة التقريبية: ${cmp.score}\nاكتب ملاحظة قصيرة جداً (سطرين) بالعربية لتحسين التلاوة.`,
+            'معلّم قرآن مختصر.'
+          );
+        } catch (_) {}
+      }
+      if (feedback) {
+        feedback.innerHTML = `<div style="margin-top:0.8rem;padding:0.9rem;border-radius:12px;background:rgba(20,184,166,0.12);line-height:1.7">
+          <strong style="color:var(--accent-light)">التقدير: ${cmp.score}%</strong>
+          <p style="margin-top:0.4rem;font-size:0.9rem">ما تم التقاطه: <em>${transcript}</em></p>
+          <p style="font-size:0.85rem;color:var(--text-secondary)">${cmp.note}</p>
+          ${extra ? `<p style="font-size:0.88rem;margin-top:0.5rem">${extra}</p>` : ''}
+          <p style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.4rem">* تحليل Online عبر المتصفح${getGeminiKey() ? ' + Gemini' : ''}</p>
+        </div>`;
+      }
+      addPoints(cmp.score >= 70 ? 10 : 5, 'تلاوة');
+      showToast('تم التحليل');
+    };
+    rec.onerror = () => {
+      showToast('تعذر التعرف على الصوت');
+      btn.classList.remove('recording');
+      if (wave) wave.classList.remove('active');
+      window._recognitionActive = false;
+    };
+    rec.onend = () => {
+      btn.classList.remove('recording');
+      if (wave) wave.classList.remove('active');
+      window._recognitionActive = false;
+    };
+    rec.start();
+  } catch (e) {
+    showToast('فشل بدء التسجيل');
+  }
+}
+
+
+
 window.renderRecitationUI = function () {
+  // ayah options from loaded sample
+  let opts = '';
+  Object.entries(QURAN_SAMPLE).forEach(([id, s]) => {
+    (s.ayahs || []).slice(0, 7).forEach(a => {
+      opts += `<option value="${id}:${a.n}">${s.name} — آية ${a.n}</option>`;
+    });
+  });
+  const hasKey = !!(state.settings && state.settings.geminiApiKey);
   return `
     <div class="card recite-box" style="margin-top:1rem">
       <div class="section-title" style="justify-content:center">🎙️ مساعد تصحيح التلاوة</div>
-      <p style="font-size:0.85rem;color:var(--text-secondary)">سجّل قراءتك لآية قصيرة واحصل على ملاحظات</p>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">
+        ${state.settings._geminiVerified && hasKey
+          ? '<span style="color:#86efac">● Gemini متصل ويعمل' + (state.settings._geminiModel ? ' ('+state.settings._geminiModel+')' : '') + '</span> — سجّل قراءتك للتحليل'
+          : hasKey
+          ? '<span style="color:#fde68a">● مفتاح محفوظ — اختبره من الإعدادات</span>'
+          : 'بدون مفتاح: تحليل بالمتصفح. أضف مفتاح Gemini من الإعدادات لنتيجة أفضل'}
+      </p>
+      <label style="font-size:0.8rem;color:var(--text-secondary)">الآية المرجعية</label>
+      <select id="recite-ayah-select" class="select-styled" style="width:100%;margin:0.3rem 0 0.8rem">${opts}</select>
       <div class="recite-wave" id="recite-wave">
         <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
       </div>
@@ -3669,6 +4783,7 @@ window.renderRecitationUI = function () {
       <div id="recite-feedback"></div>
     </div>`;
 };
+
 
 // -------------------- Family Profiles --------------------
 window.renderFamilySection = function () {
@@ -3983,6 +5098,7 @@ window.addPoints = function (amount, reason) {
   const mult = getPointMultiplier();
   const finalAmt = Math.round(amount * mult);
   state.userProfile.points += finalAmt;
+  if (typeof addWeeklyPoints === 'function') addWeeklyPoints(finalAmt);
   state.userProfile.level = Math.floor(state.userProfile.points / 200) + 1;
   waterPlant(Math.min(finalAmt / 5, 8));
   updateStreakOnActivity();
@@ -4103,7 +5219,19 @@ window.importBackup = function () {
       if (!confirm('سيتم استبدال بياناتك الحالية. هل أنت متأكد؟')) return;
       state = data.state;
       // merge defaults for any new keys
-      if (typeof ensureFunState === 'function') ensureFunState();
+      
+  try {
+    const s = localStorage.getItem('tilawaStyle');
+    const l = localStorage.getItem('tilawaLayout');
+    if (s) window._tilawa.style = s;
+    if (l) window._tilawa.layout = l;
+  } catch (_) {}
+
+  if (typeof ensureFunState === 'function') ensureFunState();
+  if (typeof ensurePlansState === 'function') ensurePlansState();
+  if (typeof applyKidsMode === 'function') applyKidsMode();
+  if (typeof ensureFunMapState === 'function') ensureFunMapState();
+  if (typeof evalLearnProgress === 'function') evalLearnProgress();
   if (typeof ensureLeaderboardState === 'function') ensureLeaderboardState();
       if (!state.family) state.family = [];
       if (!state.bookmarks) state.bookmarks = [];
@@ -4190,17 +5318,48 @@ function updateBackupStatus(msg) {
 window._adhanAudioCtx = null;
 window.playAdhan = function () {
   if (state.settings && state.settings.adhanEnabled === false) return;
+  const urls = [
+    'https://cdn.aladhan.com/audio/adhans/a1.mp3',
+    'https://cdn.aladhan.com/audio/adhans/a2.mp3',
+    'https://www.islamcan.com/audio/adhan/azan2.mp3',
+    'https://www.islamcan.com/audio/adhan/azan1.mp3',
+    'https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3'
+  ];
+  try {
+    if (!window._adhanEl) {
+      window._adhanEl = new Audio();
+      window._adhanEl.preload = 'auto';
+    }
+    const el = window._adhanEl;
+    try { el.pause(); } catch (_) {}
+    let idx = 0;
+    const tryNext = () => {
+      if (idx >= urls.length) {
+        playAdhanTonesFallback();
+        return;
+      }
+      el.onerror = () => tryNext();
+      el.src = urls[idx++];
+      const p = el.play();
+      if (p && p.then) {
+        p.then(() => showToast('🔔 الأذان')).catch(() => tryNext());
+      }
+    };
+    tryNext();
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+  } catch (e) {
+    playAdhanTonesFallback();
+  }
+};
+
+function playAdhanTonesFallback() {
   try {
     const ctx = window._adhanAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
     window._adhanAudioCtx = ctx;
-    // Simple melodic pattern approximating adhan call (respectful short tones)
     const notes = [
-      { f: 392, t: 0, d: 0.4 },
-      { f: 440, t: 0.45, d: 0.5 },
-      { f: 523.25, t: 1.0, d: 0.6 },
-      { f: 494, t: 1.7, d: 0.4 },
-      { f: 440, t: 2.2, d: 0.5 },
-      { f: 392, t: 2.8, d: 0.8 }
+      { f: 392, t: 0, d: 0.4 }, { f: 440, t: 0.45, d: 0.5 },
+      { f: 523.25, t: 1.0, d: 0.6 }, { f: 494, t: 1.7, d: 0.4 },
+      { f: 440, t: 2.2, d: 0.5 }, { f: 392, t: 2.8, d: 0.8 }
     ];
     notes.forEach(n => {
       const osc = ctx.createOscillator();
@@ -4215,12 +5374,11 @@ window.playAdhan = function () {
       osc.start(ctx.currentTime + n.t);
       osc.stop(ctx.currentTime + n.t + n.d + 0.05);
     });
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
-    showToast('🔔 حان وقت الصلاة');
-  } catch (e) {
-    console.warn(e);
-  }
-};
+    showToast('🔔 تنبيه الصلاة');
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  } catch (e) { console.warn(e); }
+}
+
 
 // Prayer notification scheduler
 window._prayerNotifTimer = null;
@@ -4398,9 +5556,11 @@ window.fetchFullSurah = async function (id) {
     // cache in localStorage (may be large)
     try {
       const cache = JSON.parse(localStorage.getItem('quranCache') || '{}');
-      cache[id] = QURAN_SAMPLE[id];
+      // keep small placeholder in LS; full text in IDB
+      cache[id] = { name: QURAN_SAMPLE[id].name, full: true, ayahCount: QURAN_SAMPLE[id].ayahs.length };
       localStorage.setItem('quranCache', JSON.stringify(cache));
     } catch (_) {}
+    if (typeof saveQuranSurahToIDB === 'function') saveQuranSurahToIDB(id, QURAN_SAMPLE[id]);
     loadSurah(String(id));
     showToast('تم تحميل ' + name);
   } catch (e) {
@@ -4863,8 +6023,2031 @@ document.addEventListener('visibilitychange', async () => {
   }
 });
 
+
+window.onCitySelectChange = function () {
+  const sel = document.getElementById('setting-city-select');
+  const cityIn = document.getElementById('setting-city');
+  const countryIn = document.getElementById('setting-country');
+  if (!sel) return;
+  if (sel.value === '__custom__') {
+    if (cityIn) cityIn.style.display = 'block';
+    if (countryIn) countryIn.style.display = 'block';
+  } else if (sel.value) {
+    const parts = sel.value.split('|');
+    if (cityIn) { cityIn.value = parts[0] || ''; cityIn.style.display = 'none'; }
+    if (countryIn) { countryIn.value = parts[1] || ''; countryIn.style.display = 'none'; }
+  }
+};
+
+
+// Refresh prayer times when calendar day changes
+window._lastPrayerDate = null;
+function ensureFreshPrayerTimes() {
+  const t = typeof todayKey === 'function' ? todayKey() : new Date().toISOString().slice(0,10);
+  if (window._lastPrayerDate !== t) {
+    window._lastPrayerDate = t;
+    if (typeof fetchPrayerTimes === 'function') {
+      fetchPrayerTimes().then(() => {
+        if (typeof currentView !== 'undefined' && currentView === 'dashboard' && typeof renderDashboard === 'function') {
+          renderDashboard();
+        }
+      });
+    }
+  }
+}
+
+
+window.detectCityFromGPS = function () {
+  if (!navigator.geolocation) {
+    showToast('GPS غير مدعوم');
+    return;
+  }
+  showToast('جاري تحديد موقعك...');
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    state.settings.lat = lat;
+    state.settings.lng = lng;
+    try {
+      // Aladhan timings by coordinates — more accurate than city name
+      const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=${state.settings.calculationMethod || 5}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.code === 200) {
+        prayerTimes = data.data.timings;
+        const hijri = data.data.date.hijri;
+        window._hijriStr = hijri ? `${hijri.day} ${hijri.month.ar} ${hijri.year} هـ` : '';
+        localStorage.setItem('cachedPrayerTimes', JSON.stringify({
+          times: prayerTimes,
+          date: todayKey(),
+          hijri: hijri,
+          lat, lng
+        }));
+        // reverse-ish: try bigdatacloud or just save coords
+        state.settings.city = state.settings.city || 'GPS';
+        state.settings.country = state.settings.country || 'GPS';
+        saveState();
+        showToast('تم ضبط المواقيت حسب موقعك ✓');
+        if (currentView === 'dashboard') renderDashboard();
+        closeSettings();
+        return;
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    showToast('تعذر جلب المواقيت من GPS');
+  }, (err) => showToast('فشل الموقع: ' + err.message), { enableHighAccuracy: true, timeout: 12000 });
+};
+
+
+// ============================================================
+// INDEXEDDB STORAGE LAYER
+// ============================================================
+const IDB_NAME = 'ImanPWA';
+const IDB_STORE = 'kv';
+const IDB_VERSION = 1;
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) return reject(new Error('no idb'));
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbSet(key, value) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function idbGet(key) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const req = tx.objectStore(IDB_STORE).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbDelete(key) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// Quran cache in IDB (larger than localStorage allows comfortably)
+async function saveQuranSurahToIDB(id, data) {
+  try {
+    await idbSet('quran_' + id, data);
+  } catch (e) { console.warn('idb quran save', e); }
+}
+
+async function loadQuranSurahFromIDB(id) {
+  try {
+    return await idbGet('quran_' + id);
+  } catch (_) { return null; }
+}
+
+async function loadAllQuranFromIDB() {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.getAllKeys();
+      req.onsuccess = async () => {
+        const keys = (req.result || []).filter(k => String(k).startsWith('quran_'));
+        for (const k of keys) {
+          const id = String(k).replace('quran_', '');
+          const data = await idbGet(k);
+          if (data) QURAN_SAMPLE[id] = data;
+        }
+        resolve();
+      };
+      req.onerror = () => resolve();
+    });
+  } catch (_) {}
+}
+
+
+async function loadStateAsync() {
+  let fromLS = null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) fromLS = JSON.parse(raw);
+  } catch (_) {}
+  let fromIDB = null;
+  try {
+    if (typeof idbGet === 'function') fromIDB = await idbGet('appState');
+  } catch (_) {}
+  // Prefer the one with more points / newer activity
+  let chosen = fromLS || fromIDB;
+  if (fromLS && fromIDB) {
+    const pLS = fromLS.userProfile?.points || 0;
+    const pIDB = fromIDB.userProfile?.points || 0;
+    chosen = pIDB > pLS ? fromIDB : fromLS;
+  }
+  if (chosen) {
+    return deepMerge(JSON.parse(JSON.stringify(DEFAULT_DATA)), chosen);
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+
+
+// ============================================================
+// FREE ONLINE AI — Google Gemini (user API key, client-side)
+// ============================================================
+
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.6-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash'
+];
+
+function getGeminiKey() {
+  return (state.settings && state.settings.geminiApiKey || '').trim();
+}
+
+function geminiUrl(model, key) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+}
+
+async function geminiFetch(model, key, body) {
+  const res = await fetch(geminiUrl(model, key), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': key
+    },
+    body: JSON.stringify(body)
+  });
+  let data = null;
+  try { data = await res.json(); } catch (_) {}
+  if (!res.ok || data?.error) {
+    const msg = data?.error?.message || data?.error?.status || ('HTTP ' + res.status);
+    const err = new Error(msg);
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+function extractGeminiText(data) {
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  return parts.map(p => p.text || '').join('').trim();
+}
+
+window.testGeminiKey = async function () {
+  const key = (document.getElementById('setting-gemini-key')?.value || getGeminiKey()).trim();
+  if (!key) { showToast('أدخل المفتاح أولاً'); return; }
+  if (key.length < 20) { showToast('المفتاح يبدو قصيراً — انسخه كاملاً من AI Studio'); return; }
+  if (typeof updateGeminiKeyStatus === 'function') updateGeminiKeyStatus('pending', 'جاري الاختبار على نماذج Gemini...');
+  const btn = document.getElementById('btn-test-gemini');
+  if (btn) { btn.disabled = true; btn.textContent = 'جاري الاختبار...'; }
+  showToast('جاري اختبار المفتاح على عدة نماذج...');
+
+  const body = { contents: [{ parts: [{ text: 'رد بكلمة واحدة فقط: مرحبا' }] }] };
+  let lastErr = '';
+  for (const model of GEMINI_MODELS) {
+    try {
+      const data = await geminiFetch(model, key, body);
+      const text = extractGeminiText(data) || 'OK';
+      state.settings.geminiApiKey = key;
+      state.settings._geminiModel = model;
+      state.settings._geminiVerified = true;
+      state.settings._geminiVerifiedAt = Date.now();
+      saveState();
+      updateGeminiKeyStatus('ok', model);
+      const btnOk = document.getElementById('btn-test-gemini');
+      if (btnOk) { btnOk.disabled = false; btnOk.textContent = 'اختبار المفتاح'; }
+      showToast('✓ يعمل مع ' + model + ' — ' + text.slice(0, 30));
+      return;
+    } catch (e) {
+      lastErr = e.message || String(e);
+      console.warn('Gemini model failed', model, lastErr);
+    }
+  }
+  // Show helpful Arabic message
+  let tip = lastErr;
+  if (/API key not valid|INVALID_ARGUMENT|API_KEY_INVALID/i.test(lastErr)) {
+    tip = 'المفتاح غير صالح. أنشئ مفتاحاً جديداً من aistudio.google.com/apikey';
+  } else if (/PERMISSION_DENIED|403|restricted|billing/i.test(lastErr)) {
+    tip = 'المفتاح مرفوض أو المشروع مقيّد. جرّب مشروعاً جديداً في AI Studio أو فعّل Generative Language API';
+  } else if (/not found|404|not supported/i.test(lastErr)) {
+    tip = 'النماذج غير متاحة لهذا المفتاح. تأكد أن المفتاح من Google AI Studio (ليس Vertex فقط)';
+  } else if (/Failed to fetch|NetworkError|CORS/i.test(lastErr)) {
+    tip = 'مشكلة شبكة/اتصال. تأكد من الإنترنت وأنك لا تستخدم مانع إعلانات يحجب Google';
+  }
+  if (typeof updateGeminiKeyStatus === 'function') updateGeminiKeyStatus('fail', tip.slice(0, 80));
+  const btnFail = document.getElementById('btn-test-gemini');
+  if (btnFail) { btnFail.disabled = false; btnFail.textContent = 'اختبار المفتاح'; }
+  showToast('فشل الاختبار: ' + tip);
+};
+
+async function callGeminiText(prompt, systemHint) {
+  const key = getGeminiKey();
+  if (!key) throw new Error('NO_KEY');
+  const preferred = state.settings._geminiModel;
+  const models = preferred ? [preferred, ...GEMINI_MODELS.filter(m => m !== preferred)] : GEMINI_MODELS;
+  const full = (systemHint ? systemHint + '\n\n' : '') + prompt;
+  const body = {
+    contents: [{ parts: [{ text: full }] }],
+    generationConfig: { temperature: 0.4, maxOutputTokens: 512 }
+  };
+  let lastErr = '';
+  for (const model of models) {
+    try {
+      const data = await geminiFetch(model, key, body);
+      state.settings._geminiModel = model;
+      return extractGeminiText(data);
+    } catch (e) {
+      lastErr = e.message || String(e);
+    }
+  }
+  throw new Error(lastErr || 'Gemini failed');
+}
+
+async function callGeminiWithAudio(base64Audio, mimeType, prompt) {
+  const key = getGeminiKey();
+  if (!key) throw new Error('NO_KEY');
+  const preferred = state.settings._geminiModel;
+  const models = preferred ? [preferred, ...GEMINI_MODELS.filter(m => m !== preferred)] : GEMINI_MODELS;
+  const body = {
+    contents: [{
+      parts: [
+        { inline_data: { mime_type: mimeType || 'audio/webm', data: base64Audio } },
+        { text: prompt }
+      ]
+    }],
+    generationConfig: { temperature: 0.3, maxOutputTokens: 600 }
+  };
+  let lastErr = '';
+  for (const model of models) {
+    try {
+      const data = await geminiFetch(model, key, body);
+      state.settings._geminiModel = model;
+      return extractGeminiText(data);
+    } catch (e) {
+      lastErr = e.message || String(e);
+    }
+  }
+  throw new Error(lastErr || 'Gemini audio failed');
+}
+
+
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const s = reader.result || '';
+      const b64 = String(s).split(',')[1] || '';
+      resolve(b64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function getReferenceAyah() {
+  const sel = document.getElementById('recite-ayah-select');
+  if (sel && sel.value) {
+    const [sid, an] = sel.value.split(':');
+    const surah = QURAN_SAMPLE[sid];
+    const ayah = surah?.ayahs?.find(a => String(a.n) === String(an));
+    if (ayah) return { surahId: sid, name: surah.name, n: ayah.n, text: ayah.t };
+  }
+  // default Fatiha 1
+  const s = QURAN_SAMPLE[1];
+  const a = s?.ayahs?.[0];
+  return { surahId: '1', name: s?.name || 'الفاتحة', n: 1, text: a?.t || 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ' };
+}
+
+function normalizeAr(t) {
+  return (t || '')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[ٱأإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[^\u0600-\u06FF\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function compareAyah(spoken, reference) {
+  const a = normalizeAr(spoken);
+  const b = normalizeAr(reference);
+  if (!a) return { score: 0, note: 'لم يُلتقط كلام واضح' };
+  if (a === b) return { score: 98, note: 'تطابق ممتاز مع نص الآية' };
+  // simple token overlap
+  const ta = new Set(a.split(' ').filter(Boolean));
+  const tb = new Set(b.split(' ').filter(Boolean));
+  let inter = 0;
+  ta.forEach(w => { if (tb.has(w)) inter++; });
+  const score = Math.round(100 * inter / Math.max(tb.size, 1));
+  return { score: Math.min(95, score), note: score >= 70 ? 'قراءة جيدة مع فروقات بسيطة' : 'هناك اختلافات عن نص الآية — أعد المحاولة ببطء' };
+}
+
+window.generateAIChallenge = async function () {
+  closeSettings();
+  showToast('جاري توليد التحدي...');
+  const fallback = () => {
+    const list = [
+      'اقرأ سورة الإخلاص بتدبر اليوم',
+      'صلِّ ركعتين بنية الشكر',
+      'سبّح 100 مرة واستغفر 100',
+      'تصدّق ولو بالقليل',
+      'ادعُ لوالديك في السجود'
+    ];
+    return list[Math.floor(Math.random() * list.length)];
+  };
+  let text = '';
+  try {
+    if (getGeminiKey()) {
+      text = await callGeminiText(
+        'اقترح تحدياً إيمانياً واحداً قصيراً (جملة واحدة فقط بالعربية الفصحى المبسطة) لمسلم اليوم: عبادة أو خلق أو قرآن. بدون ترقيم أو شرح.',
+        'أنت مساعد إيماني مختصر.'
+      );
+      text = (text || '').replace(/^["«\s]+|["»\s]+$/g, '').split('\n')[0].slice(0, 120);
+    }
+  } catch (e) {
+    console.warn(e);
+  }
+  if (!text) text = fallback();
+  state._aiChallenge = { text, date: todayKey() };
+  saveState();
+  showToast('✨ ' + text);
+  if (currentView === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+  else if (typeof switchView === 'function') switchView('dashboard');
+};
+
+window.renderAIChallengeCard = function () {
+  const ch = state._aiChallenge;
+  if (!ch || ch.date !== todayKey()) return '';
+  return `
+    <div class="card" style="border:1px solid rgba(20,184,166,0.35);margin-bottom:0.8rem">
+      <div class="section-title">✨ تحدي اليوم (AI)</div>
+      <p style="font-size:1rem;line-height:1.7;margin:0.4rem 0">${ch.text}</p>
+      <button class="btn btn-primary btn-sm" onclick="completeAIChallenge()">✓ أنجزتُ التحدي (+15)</button>
+    </div>`;
+};
+
+window.completeAIChallenge = function () {
+  if (!state._aiChallenge || state._aiChallenge.done) {
+    showToast('لا يوجد تحدي أو تم إنجازه');
+    return;
+  }
+  state._aiChallenge.done = true;
+  addPoints(15, 'تحدي-AI');
+  saveState();
+  showToast('بارك الله فيك +15');
+  if (typeof renderDashboard === 'function') renderDashboard();
+};
+
+
+
+window.updateGeminiKeyStatus = function (state, detail) {
+  const box = document.getElementById('ai-key-status');
+  const txt = document.getElementById('ai-key-status-text');
+  if (!box || !txt) return;
+  box.className = 'ai-key-status ' + (state || 'empty');
+  if (state === 'ok') {
+    txt.textContent = '✓ المفتاح يعمل' + (detail ? ' — ' + detail : '');
+  } else if (state === 'fail') {
+    txt.textContent = '✗ فشل التحقق' + (detail ? ': ' + detail : '');
+  } else if (state === 'pending') {
+    txt.textContent = detail || 'جاري الاختبار...';
+  } else if (state === 'saved') {
+    box.className = 'ai-key-status pending';
+    txt.textContent = 'مفتاح محفوظ — اضغط «اختبار المفتاح» للتحقق';
+  } else {
+    const key = (document.getElementById('setting-gemini-key')?.value || '').trim();
+    if (key) {
+      box.className = 'ai-key-status pending';
+      txt.textContent = 'مفتاح مُدخل — اضغط اختبار للتحقق';
+    } else {
+      box.className = 'ai-key-status empty';
+      txt.textContent = 'لم يُدخل مفتاح بعد';
+    }
+  }
+};
+
+window.onGeminiKeyInput = function () {
+  // key changed → reset verified flag until re-tested
+  if (state.settings) {
+    state.settings._geminiVerified = false;
+    state.settings._geminiModel = state.settings._geminiModel || null;
+  }
+  updateGeminiKeyStatus();
+};
+
+
+
+// ============================================================
+// معلّم التلاوة بالذكاء الاصطناعي
+// ============================================================
+
+// أطوال السور لحساب رقم الآية العالمي للصوت
+const SURAH_AYAHS_COUNT = [0,7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
+
+function globalAyahNumber(surahId, ayahN) {
+  const sid = parseInt(surahId, 10);
+  let n = 0;
+  for (let s = 1; s < sid; s++) n += (SURAH_AYAHS_COUNT[s] || 0);
+  return n + parseInt(ayahN, 10);
+}
+
+window._tilawa = window._tilawa || {
+  surahId: '1',
+  from: 1,
+  to: 7,
+  idx: 0,
+  phase: 'listen', // listen | ready | recording | feedback
+  style: 'page', // page | lines | focus
+  results: {},
+  attempts: 0,
+  autoPlay: true
+};
+
+window._tilawaAudio = null;
+
+window.renderTilawaTeacher = function () {
+  const t = window._tilawa;
+  ensurePopularSurahs();
+  if (!t.style) t.style = 'page';
+  if (!t.phase) t.phase = 'listen';
+
+  const surahOpts = Object.entries(QURAN_SAMPLE).map(([id, s]) =>
+    `<option value="${id}" ${String(id) === String(t.surahId) ? 'selected' : ''}>${s.name}</option>`
+  ).join('');
+
+  const surah = QURAN_SAMPLE[t.surahId];
+  const maxA = (surah && surah.ayahs) ? surah.ayahs.length : 1;
+  t.from = Math.max(1, Math.min(t.from, maxA));
+  t.to = Math.max(t.from, Math.min(t.to, maxA));
+
+  const range = getTilawaRange();
+  if (t.idx >= range.length) t.idx = Math.max(0, range.length - 1);
+  const current = range[t.idx];
+  const doneCount = range.filter(a => t.results[a.n]).length;
+  const pct = range.length ? Math.round(100 * doneCount / range.length) : 0;
+  const hasKey = !!(state.settings && state.settings.geminiApiKey);
+  const verified = !!(state.settings && state.settings._geminiVerified);
+
+  const mushaf = renderTilawaMushaf(range, t);
+
+  const feedback = t.lastFeedback || '';
+  const score = t.lastScore != null ? t.lastScore : null;
+
+  const stepListen = t.phase === 'listen' || t.phase === 'ready' ? 'on' : '';
+  const stepRec = t.phase === 'recording' ? 'on' : '';
+  const stepFix = t.phase === 'feedback' ? 'on' : '';
+
+  document.getElementById('view-tilawa').innerHTML = `
+    <div class="card">
+      <div class="section-title">🎓 معلّم التلاوة</div>
+      <p class="ai-disclaimer">⚠️ مساعد تمرين بالذكاء الاصطناعي — <strong>ليس بديلاً عن معلّم تجويد بشري</strong> ولا يُعتمد عليه في الأحكام الشرعية الدقيقة.</p>
+      <div style="display:flex;gap:0.4rem;margin-bottom:0.45rem;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="toggleFocusMode()">🧘 تركيز</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleEchoMode()">${window.tilawaEchoMode ? '🔁 ردّد: تشغيل' : '🔁 ردّد بعد القارئ'}</button>
+      </div>
+      ${typeof renderAyahStarsBar === 'function' ? renderAyahStarsBar(t.surahId, t.from, t.to) : ''}
+      <div class="tilawa-steps">
+        <span class="${t.phase === 'listen' || t.phase === 'ready' ? 'on' : ''}">① استمع</span>
+        <span class="${t.phase === 'recording' ? 'on' : ''}">② اقرأ</span>
+        <span class="${t.phase === 'feedback' ? 'on' : ''}">③ تصحيح</span>
+        <span>④ كرّر / التالي</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;margin-bottom:0.45rem">
+        <div>
+          <label style="font-size:0.72rem;color:var(--text-secondary)">السورة</label>
+          <select id="tilawa-surah" class="select-styled" style="width:100%" onchange="tilawaOnSurahChange(this.value)">${surahOpts}</select>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text-secondary)">من</label>
+          <input type="number" id="tilawa-from" class="select-styled" style="width:100%" min="1" max="${maxA}" value="${t.from}" onchange="tilawaUpdateRange()" />
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text-secondary)">إلى</label>
+          <input type="number" id="tilawa-to" class="select-styled" style="width:100%" min="1" max="${maxA}" value="${t.to}" onchange="tilawaUpdateRange()" />
+        </div>
+      </div>
+      <label style="font-size:0.72rem;color:var(--text-secondary)">القارئ</label>
+      <select id="tilawa-reciter" class="select-styled" style="width:100%;margin:0.25rem 0 0.5rem" onchange="tilawaSetReciter(this.value)">
+        <option value="ar.alafasy">مشاري العفاسي</option>
+        <option value="ar.hudhaify">علي الحذيفي</option>
+        <option value="ar.minshawi">المنشاوي</option>
+        <option value="ar.abdulbasitmurattal">عبد الباسط</option>
+        <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+      </select>
+      <label style="font-size:0.72rem;color:var(--text-secondary)">شكل المصحف</label>
+      <div class="tilawa-style-pick">
+        <button type="button" class="${t.style === 'page' ? 'active' : ''}" onclick="tilawaSetStyle('page')">📖 صفحة</button>
+        <button type="button" class="${t.style === 'lines' ? 'active' : ''}" onclick="tilawaSetStyle('lines')">☰ سطور</button>
+        <button type="button" class="${t.style === 'focus' ? 'active' : ''}" onclick="tilawaSetStyle('focus')">🔍 آية كبيرة</button>
+      </div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem">
+        <button class="btn btn-ghost btn-sm" onclick="fetchFullSurah(document.getElementById('tilawa-surah').value).then(()=>renderTilawaTeacher())">📥 تحميل</button>
+        <button class="btn btn-primary btn-sm" onclick="tilawaStartSession()">بدء الجلسة</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchView('quran')">← المصحف</button>
+      </div>
+      <div class="tilawa-progress-bar"><span style="width:${pct}%"></span></div>
+      <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center">
+        ${doneCount}/${range.length || 0}
+        ${verified ? ' · <span style="color:#86efac">● Gemini</span>' : hasKey ? ' · اختبر المفتاح' : ''}
+      </div>
+    </div>
+
+    <div class="card" style="padding:0.7rem">
+      <div style="text-align:center;font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.25rem">
+        ${current ? `${surah?.name || ''} — آية <strong style="color:var(--accent-light)">${current.n}</strong>` : '—'}
+      </div>
+      ${current && current.m ? `<p style="text-align:center;font-size:0.8rem;color:var(--accent-light);opacity:0.9;margin:0.2rem 0 0.5rem">💡 ${current.m}</p>` : ''}
+      <div class="tilawa-mushaf style-${t.style}" id="tilawa-mushaf">${mushaf}</div>
+
+      <div class="tilawa-listen-bar">
+        <button type="button" class="btn-listen" id="tilawa-listen-btn" onclick="tilawaPlayReference()" ${!current ? 'disabled' : ''}>
+          🔊 استمع للآية أولاً
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="tilawaStopAudio()">⏹</button>
+      </div>
+
+      <div class="tilawa-phase" id="tilawa-phase">
+        ${t.phase === 'recording' ? '🔴 جاري التسجيل — اقرأ ثم أوقف' :
+          t.phase === 'feedback' ? 'راجع التصحيح ثم كرّر أو انتقل' :
+          t.phase === 'listen' ? '① استمع للقارئ أولاً ثم اضغط التسجيل' :
+          current ? '② اقرأ الآية كما سمعتها' : 'حدّد النطاق وابدأ'}
+      </div>
+
+      <div style="display:flex;justify-content:center;margin:0.45rem 0">
+        <button class="tilawa-rec-btn ${t.phase === 'recording' ? 'recording' : ''}" id="tilawa-rec-btn" onclick="tilawaToggleRecord()" ${!current ? 'disabled' : ''}>
+          ${t.phase === 'recording' ? '⏹' : '🎤'}
+        </button>
+      </div>
+      <div class="tilawa-controls">
+        <button class="btn btn-ghost btn-sm" onclick="tilawaPrev()" ${t.idx <= 0 ? 'disabled' : ''}>→ السابقة</button>
+        <button class="btn btn-ghost btn-sm" onclick="tilawaRepeat()">🔁 تكرار</button>
+        <button class="btn btn-ghost btn-sm" onclick="tilawaNext()" ${t.idx >= range.length - 1 ? 'disabled' : ''}>التالية ←</button>
+      </div>
+      ${score != null ? `<div class="tilawa-score">${score}%</div>` : ''}
+      <div id="tilawa-feedback" class="${feedback ? 'tilawa-feedback' : ''}">${feedback || ''}</div>
+      ${t.phase === 'feedback' ? `
+        <div style="display:flex;gap:0.4rem;margin-top:0.6rem">
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="tilawaRepeat()">🔁 أعد التلاوة</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="tilawaNextAfterFeedback()">التالي ✓</button>
+        </div>` : ''}
+    </div>
+  `;
+
+  const recSel = document.getElementById('tilawa-reciter');
+  if (recSel) {
+    const r = (state.settings && state.settings.tilawaReciter) || 'ar.alafasy';
+    recSel.value = r;
+  }
+  setTimeout(() => {
+    const el = document.querySelector('.tilawa-ayah.current, .ayah-unit.current');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 80);
+};
+
+window.tilawaSetReciter = function (val) {
+  if (state.settings) state.settings.tilawaReciter = val;
+  saveState();
+  showToast('تم اختيار القارئ');
+};
+
+
+function renderTilawaMushaf(range, t) {
+  if (!range.length) {
+    return '<p style="text-align:center;padding:1rem;color:#666">حمّل السورة واختر النطاق</p>';
+  }
+  if (t.style === 'focus') {
+    const a = range[t.idx];
+    if (!a) return '';
+    return `<div class="tilawa-focus-ayah">${a.t}</div><div class="tilawa-focus-num">${a.n}</div>`;
+  }
+  if (t.style === 'lines') {
+    return range.map((a, i) => {
+      const cls = ['tilawa-ayah', i === t.idx ? 'current' : '', t.results[a.n] ? 'done' : ''].filter(Boolean).join(' ');
+      return `<div class="${cls}" onclick="tilawaJump(${i})"><span class="num">${a.n}</span> ${a.t}</div>`;
+    }).join('');
+  }
+  // page — continuous classic
+  const parts = range.map((a, i) => {
+    const cls = ['ayah-unit', i === t.idx ? 'current' : '', t.results[a.n] ? 'done' : ''].filter(Boolean).join(' ');
+    return `<span class="${cls}" onclick="tilawaJump(${i})">${a.t}<span class="ayah-marker">${a.n}</span></span>`;
+  });
+  return `<div class="tilawa-page-text">${parts.join(' ')}</div>`;
+}
+
+function ensurePopularSurahs() {
+  const popular = {
+    1: 'الفاتحة', 2: 'البقرة', 18: 'الكهف', 32: 'السجدة', 36: 'يس',
+    55: 'الرحمن', 56: 'الواقعة', 67: 'الملك', 78: 'النبأ',
+    112: 'الإخلاص', 113: 'الفلق', 114: 'الناس'
+  };
+  Object.keys(popular).forEach(id => {
+    if (!QURAN_SAMPLE[id]) QURAN_SAMPLE[id] = { name: popular[id] + ' (حمّل)', ayahs: [{ n: 1, t: 'اضغط «تحميل»' }] };
+  });
+}
+
+function getTilawaRange() {
+  const t = window._tilawa;
+  const surah = QURAN_SAMPLE[t.surahId];
+  if (!surah || !surah.ayahs) return [];
+  return surah.ayahs.filter(a => a.n >= t.from && a.n <= t.to);
+}
+
+window.tilawaSetStyle = function (style) {
+  window._tilawa.style = style;
+  if (state.settings) {
+    state.settings.tilawaStyle = style;
+    saveState();
+  }
+  renderTilawaTeacher();
+};
+
+window.tilawaStopAudio = function () {
+  if (window._tilawaAudio) {
+    try { window._tilawaAudio.pause(); window._tilawaAudio.currentTime = 0; } catch (_) {}
+  }
+  const btn = document.getElementById('tilawa-listen-btn');
+  if (btn) btn.classList.remove('playing');
+};
+
+window.tilawaPlayReference = function () {
+  const t = window._tilawa;
+  const range = getTilawaRange();
+  const current = range[t.idx];
+  if (!current) return;
+  tilawaStopAudio();
+
+  const g = globalAyahNumber(t.surahId, current.n);
+  const reciter = (state.settings && state.settings.tilawaReciter) || 'ar.alafasy';
+  const urls = [
+    `https://cdn.islamic.network/quran/audio/128/${reciter}/${g}.mp3`,
+    `https://cdn.islamic.network/quran/audio/64/${reciter}/${g}.mp3`
+  ];
+  const audio = new Audio();
+  window._tilawaAudio = audio;
+  let i = 0;
+  const tryPlay = () => {
+    if (i >= urls.length) {
+      showToast('تعذر تشغيل الصوت — تحقق من الإنترنت');
+      return;
+    }
+    audio.src = urls[i++];
+    audio.play().then(() => {
+      const btn = document.getElementById('tilawa-listen-btn');
+      if (btn) btn.classList.add('playing');
+      t.phase = 'listen';
+      // after play ends → ready to recite
+      audio.onended = () => {
+        if (btn) btn.classList.remove('playing');
+        t.phase = 'ready';
+        const ph = document.getElementById('tilawa-phase');
+        if (window.tilawaEchoMode) {
+          if (ph) ph.textContent = '🔁 صمت للترديد — ثم سجّل قراءتك';
+          showToast('ردّد خلف القارئ ثم سجّل');
+        } else {
+          if (ph) ph.textContent = '② اقرأ الآية كما سمعتها';
+          showToast('الآن دورك — اقرأ');
+        }
+      };
+    }).catch(() => tryPlay());
+  };
+  audio.onerror = () => tryPlay();
+  tryPlay();
+  showToast('استمع جيداً...');
+};
+
+window.tilawaOnSurahChange = function (id) {
+  window._tilawa.surahId = id;
+  window._tilawa.from = 1;
+  const surah = QURAN_SAMPLE[id];
+  window._tilawa.to = Math.min(7, surah?.ayahs?.length || 1);
+  window._tilawa.idx = 0;
+  window._tilawa.results = {};
+  window._tilawa.lastFeedback = '';
+  window._tilawa.lastScore = null;
+  window._tilawa.phase = 'listen';
+  tilawaStopAudio();
+  renderTilawaTeacher();
+};
+
+window.tilawaUpdateRange = function () {
+  const t = window._tilawa;
+  t.from = parseInt(document.getElementById('tilawa-from')?.value || t.from, 10) || 1;
+  t.to = parseInt(document.getElementById('tilawa-to')?.value || t.to, 10) || t.from;
+  if (t.to < t.from) t.to = t.from;
+  t.idx = 0;
+  t.results = {};
+  t.lastFeedback = '';
+  t.lastScore = null;
+  t.phase = 'listen';
+  tilawaStopAudio();
+  renderTilawaTeacher();
+};
+
+window.tilawaStartSession = function () {
+  tilawaUpdateRange();
+  const range = getTilawaRange();
+  if (!range.length) {
+    showToast('حمّل السورة أولاً');
+    return;
+  }
+  window._tilawa.idx = 0;
+  window._tilawa.phase = 'listen';
+  window._tilawa.lastFeedback = '';
+  window._tilawa.lastScore = null;
+  renderTilawaTeacher();
+  // Auto play first ayah
+  setTimeout(() => tilawaPlayReference(), 400);
+};
+
+window.tilawaJump = function (i) {
+  window._tilawa.idx = i;
+  window._tilawa.phase = 'listen';
+  window._tilawa.lastFeedback = '';
+  window._tilawa.lastScore = null;
+  tilawaStopAudio();
+  renderTilawaTeacher();
+  if (window._tilawa.autoPlay !== false) setTimeout(() => tilawaPlayReference(), 300);
+};
+
+window.tilawaPrev = function () {
+  if (window._tilawa.idx > 0) {
+    window._tilawa.idx--;
+    window._tilawa.phase = 'listen';
+    window._tilawa.lastFeedback = '';
+    window._tilawa.lastScore = null;
+    tilawaStopAudio();
+    renderTilawaTeacher();
+    setTimeout(() => tilawaPlayReference(), 300);
+  }
+};
+
+window.tilawaNext = function () {
+  const range = getTilawaRange();
+  if (window._tilawa.idx < range.length - 1) {
+    window._tilawa.idx++;
+    window._tilawa.phase = 'listen';
+    window._tilawa.lastFeedback = '';
+    window._tilawa.lastScore = null;
+    tilawaStopAudio();
+    renderTilawaTeacher();
+    setTimeout(() => tilawaPlayReference(), 300);
+  }
+};
+
+window.tilawaNextAfterFeedback = function () {
+  tilawaNext();
+};
+
+window.tilawaRepeat = function () {
+  tilawaStopAudio();
+  window._tilawa.phase = 'listen';
+  window._tilawa.lastFeedback = '';
+  window._tilawa.lastScore = null;
+  window._tilawa.attempts = (window._tilawa.attempts || 0) + 1;
+  renderTilawaTeacher();
+  setTimeout(() => tilawaPlayReference(), 300);
+};
+
+window.tilawaToggleRecord = async function () {
+  const t = window._tilawa;
+  const range = getTilawaRange();
+  const current = range[t.idx];
+  if (!current) return;
+  tilawaStopAudio();
+
+  if (window._tilawaRecorder && window._tilawaRecorder.state === 'recording') {
+    window._tilawaRecorder.stop();
+    return;
+  }
+  if (window._tilawaRecognition && window._tilawaRecActive) {
+    try { window._tilawaRecognition.stop(); } catch (_) {}
+    window._tilawaRecActive = false;
+    return;
+  }
+
+  const hasGemini = !!(state.settings && state.settings.geminiApiKey);
+  if (hasGemini && navigator.mediaDevices?.getUserMedia) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const chunks = [];
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus'
+        : (MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '');
+      const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      window._tilawaRecorder = mr;
+      mr.ondataavailable = (e) => { if (e.data?.size) chunks.push(e.data); };
+      mr.onstop = async () => {
+        stream.getTracks().forEach(tr => tr.stop());
+        t.phase = 'ready';
+        const blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' });
+        await tilawaAnalyzeWithAI(current, blob, mr.mimeType || 'audio/webm');
+      };
+      mr.start();
+      t.phase = 'recording';
+      t.lastFeedback = '';
+      t.lastScore = null;
+      renderTilawaTeacher();
+      return;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+  tilawaWebSpeech(current);
+};
+
+async function tilawaAnalyzeWithAI(ayah, blob, mimeType) {
+  const t = window._tilawa;
+  const surah = QURAN_SAMPLE[t.surahId];
+  t.lastFeedback = 'جاري التصحيح بالذكاء...';
+  renderTilawaTeacher();
+  try {
+    const b64 = await blobToBase64(blob);
+    const prompt = `أنت معلّم قرآن صبور. الطالب يتلو من سورة ${surah?.name || ''} الآية ${ayah.n}:
+«${ayah.t}»
+
+استمع للتسجيل وأجب بالعربية المبسطة:
+الدرجة: (0-100)
+ما سمعته: ...
+المقارنة: ...
+ملاحظة تجويد: (سطر)
+تشجيع: (سطر)
+لا تزد عن 8 أسطر.`;
+    const analysis = await callGeminiWithAudio(b64, (mimeType || 'audio/webm').split(';')[0], prompt);
+    const scoreMatch = analysis.match(/الدرجة\s*:\s*(\d{1,3})/);
+    const score = scoreMatch ? Math.min(100, parseInt(scoreMatch[1], 10)) : 75;
+    t.lastScore = score;
+    t.lastFeedback = analysis;
+    t.results[ayah.n] = { score, text: analysis, at: Date.now() };
+    t.phase = 'feedback';
+    addPoints(score >= 70 ? 8 : 3, 'تلاوة-معلم');
+    if (typeof recordTilawaSession === 'function') recordTilawaSession();
+    if (typeof awardAyahStar === 'function') awardAyahStar(t.surahId, ayah.n, score);
+    if (score >= 75 && typeof playWinSound === 'function') playWinSound();
+    showToast(score >= 90 ? 'ممتاز 🌟' : score >= 70 ? 'أحسنت' : 'حاول مرة أخرى');
+  } catch (e) {
+    t.lastFeedback = 'تعذر التحليل: ' + (e.message || e);
+    t.phase = 'feedback';
+  }
+  renderTilawaTeacher();
+}
+
+function tilawaWebSpeech(ayah) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('أضف مفتاح Gemini من الإعدادات للتسجيل');
+    return;
+  }
+  const t = window._tilawa;
+  const rec = new SR();
+  window._tilawaRecognition = rec;
+  rec.lang = 'ar-SA';
+  rec.interimResults = false;
+  rec.onstart = () => {
+    window._tilawaRecActive = true;
+    t.phase = 'recording';
+    renderTilawaTeacher();
+  };
+  rec.onresult = async (ev) => {
+    const transcript = ev.results[0][0].transcript || '';
+    const cmp = typeof compareAyah === 'function' ? compareAyah(transcript, ayah.t) : { score: 50, note: '' };
+    let extra = '';
+    if (typeof getGeminiKey === 'function' && getGeminiKey()) {
+      try {
+        extra = await callGeminiText(
+          `الآية: ${ayah.t}\nالطالب قال: ${transcript}\nدرجة: ${cmp.score}\nملاحظة قصيرة لتحسين التلاوة.`,
+          'معلّم قرآن مختصر.'
+        );
+      } catch (_) {}
+    }
+    t.lastScore = cmp.score;
+    t.lastFeedback = `ما تم التقاطه: ${transcript}\n${cmp.note}${extra ? '\n' + extra : ''}`;
+    t.results[ayah.n] = { score: cmp.score, text: t.lastFeedback, at: Date.now() };
+    t.phase = 'feedback';
+    addPoints(cmp.score >= 70 ? 6 : 2, 'تلاوة-معلم');
+    if (typeof recordTilawaSession === 'function') recordTilawaSession();
+    if (typeof awardAyahStar === 'function') awardAyahStar(t.surahId, ayah.n, cmp.score);
+    if (typeof recordTilawaSession === 'function') recordTilawaSession();
+    renderTilawaTeacher();
+  };
+  rec.onerror = () => {
+    window._tilawaRecActive = false;
+    t.phase = 'ready';
+    showToast('تعذر التسجيل');
+    renderTilawaTeacher();
+  };
+  rec.onend = () => {
+    window._tilawaRecActive = false;
+    if (t.phase === 'recording') {
+      t.phase = 'ready';
+      renderTilawaTeacher();
+    }
+  };
+  try { rec.start(); } catch (e) { showToast('فشل التسجيل'); }
+}
+
+
+
+// ============================================================
+// تحسينات: خطط أسبوعية، إحصائيات، شهادة، وضع أطفال، ورد
+// ============================================================
+
+const WEEKLY_PLANS = [
+  {
+    id: 'fatiha3',
+    title: 'إتقان الفاتحة في 3 أيام',
+    days: [
+      { d: 1, text: 'استمع + ردّد الآيات 1–3' },
+      { d: 2, text: 'استمع + ردّد الآيات 4–7' },
+      { d: 3, text: 'تلاوة كاملة مع تسجيل AI' }
+    ]
+  },
+  {
+    id: 'ikhlas',
+    title: 'قصار المفصل — الإخلاص',
+    days: [
+      { d: 1, text: 'سورة الإخلاص حفظاً' },
+      { d: 2, text: 'الفلق + الناس' },
+      { d: 3, text: 'مراجعة الثلاث مع التسجيل' }
+    ]
+  },
+  {
+    id: 'prayer_week',
+    title: 'أسبوع الخشوع في الصلاة',
+    days: [
+      { d: 1, text: 'صلِّ كل الفروض في وقتها' },
+      { d: 2, text: 'أذكار بعد الصلاة كاملة' },
+      { d: 3, text: 'ركعتا ضحى' },
+      { d: 4, text: 'تدبّر آية قبل كل صلاة' },
+      { d: 5, text: 'صدقة ولو قليلة' },
+      { d: 6, text: 'صلة رحم (رسالة/اتصال)' },
+      { d: 7, text: 'مراجعة الأسبوع + شهادة' }
+    ]
+  }
+];
+
+function weekStartKey() {
+  const d = new Date();
+  const day = d.getDay(); // 0 Sun
+  const diff = (day + 6) % 7; // Monday start
+  d.setDate(d.getDate() - diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function ensurePlansState() {
+  if (!state.weeklyPlan) {
+    state.weeklyPlan = { planId: 'fatiha3', week: weekStartKey(), done: {} };
+  }
+  if (state.weeklyPlan.week !== weekStartKey()) {
+    state.weeklyPlan.week = weekStartKey();
+    state.weeklyPlan.done = {};
+  }
+  if (!state.tilawaStats) state.tilawaStats = {};
+  if (!state.dailyWird) state.dailyWird = {};
+}
+
+window.applyKidsMode = function () {
+  document.body.classList.toggle('kids-mode', !!(state.settings && state.settings.kidsMode));
+};
+
+window.getWeeklyStats = function () {
+  ensurePlansState();
+  const prayerKeys = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  let prayers = 0, days = 0;
+  const now = new Date();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const k = d.toISOString().slice(0, 10);
+    const log = state.dailyLog && state.dailyLog[k];
+    if (log && log.prayers) {
+      days++;
+      prayers += prayerKeys.filter(p => log.prayers[p] && log.prayers[p].completed).length;
+    }
+  }
+  let tilawaSessions = 0;
+  Object.values(state.tilawaStats || {}).forEach(v => { tilawaSessions += (v.sessions || 0); });
+  // only this week approx: count results in _tilawa if any
+  const streak = (state.streak && state.streak.current) || 0;
+  return { prayers, streak, tilawaSessions, points: (state.userProfile && state.userProfile.points) || 0 };
+};
+
+window.renderQuickActions = function () {
+  return `
+    <div class="quick-actions" style="grid-template-columns:repeat(4,1fr)">
+      <button type="button" onclick="switchView('tracker')"><span class="qa-icon">🕌</span>الصلاة</button>
+      <button type="button" onclick="switchView('quran')"><span class="qa-icon">📖</span>القرآن</button>
+      <button type="button" onclick="switchView('tilawa')"><span class="qa-icon">🎓</span>التلاوة</button>
+      <button type="button" onclick="switchView('coach')"><span class="qa-icon">🧭</span>المدرب</button>
+    </div>
+    <div style="text-align:center;margin-bottom:0.6rem">
+      <button class="btn btn-ghost btn-sm" onclick="toggleMoreHome()">المزيد ▾</button>
+    </div>
+    <div class="more-panel" id="more-home">
+      <div style="display:flex;gap:0.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.6rem">
+        <button class="btn btn-primary btn-sm" onclick="enterDriveMode()">🚗 قيادة</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchView('leaderboard')">🏆 ترتيب</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchView('quiz')">🎮 ألعاب</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportWeeklyCertificate()">📜 شهادة الأسبوع</button>
+      </div>
+    </div>`;
+};
+
+window.toggleMoreHome = function () {
+  const el = document.getElementById('more-home');
+  if (el) el.classList.toggle('open');
+};
+
+window.renderWeeklyStatsCard = function () {
+  const s = getWeeklyStats();
+  return `
+    <div class="card">
+      <div class="section-title">📊 إحصائيات الأسبوع</div>
+      <div class="stats-grid">
+        <div class="stat-pill"><div class="n">${s.prayers}</div><div class="l">صلوات</div></div>
+        <div class="stat-pill"><div class="n">${s.streak}</div><div class="l">سلسلة</div></div>
+        <div class="stat-pill"><div class="n">${s.tilawaSessions}</div><div class="l">جلسات تلاوة</div></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:0.55rem" onclick="exportWeeklyCertificate()">📜 إصدار شهادة إنجاز</button>
+    </div>`;
+};
+
+window.renderWeeklyPlanCard = function () {
+  ensurePlansState();
+  const plan = WEEKLY_PLANS.find(p => p.id === state.weeklyPlan.planId) || WEEKLY_PLANS[0];
+  const opts = WEEKLY_PLANS.map(p =>
+    `<option value="${p.id}" ${p.id === plan.id ? 'selected' : ''}>${p.title}</option>`
+  ).join('');
+  const items = plan.days.map(day => {
+    const key = plan.id + '-' + day.d;
+    const checked = !!(state.weeklyPlan.done[key]);
+    return `<label class="plan-item">
+      <input type="checkbox" ${checked ? 'checked' : ''} onchange="togglePlanDay('${key}', this.checked)" />
+      <span><strong>يوم ${day.d}:</strong> ${day.text}</span>
+    </label>`;
+  }).join('');
+  const doneN = plan.days.filter(d => state.weeklyPlan.done[plan.id + '-' + d.d]).length;
+  return `
+    <div class="card">
+      <div class="section-title">📅 خطة أسبوعية</div>
+      <select class="select-styled" style="width:100%;margin-bottom:0.5rem" onchange="setWeeklyPlan(this.value)">${opts}</select>
+      <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.35rem">${doneN}/${plan.days.length} مكتمل</div>
+      ${items}
+      <button class="btn btn-primary btn-sm" style="width:100%;margin-top:0.5rem" onclick="startPlanInTilawa()">🎓 ابدأ في معلّم التلاوة</button>
+    </div>`;
+};
+
+window.setWeeklyPlan = function (id) {
+  ensurePlansState();
+  state.weeklyPlan.planId = id;
+  saveState();
+  if (typeof renderDashboard === 'function') renderDashboard();
+};
+
+window.togglePlanDay = function (key, checked) {
+  ensurePlansState();
+  if (checked) state.weeklyPlan.done[key] = true;
+  else delete state.weeklyPlan.done[key];
+  if (checked) addPoints(5, 'خطة-أسبوعية');
+  saveState();
+};
+
+window.startPlanInTilawa = function () {
+  ensurePlansState();
+  const id = state.weeklyPlan.planId;
+  if (id === 'fatiha3') {
+    window._tilawa = window._tilawa || {};
+    window._tilawa.surahId = '1';
+    window._tilawa.from = 1;
+    window._tilawa.to = 7;
+    window._tilawa.idx = 0;
+  } else if (id === 'ikhlas') {
+    window._tilawa = window._tilawa || {};
+    window._tilawa.surahId = '112';
+    window._tilawa.from = 1;
+    window._tilawa.to = 4;
+    window._tilawa.idx = 0;
+  }
+  switchView('tilawa');
+};
+
+window.renderDailyWirdCard = function () {
+  const n = (state.settings && state.settings.dailyWirdAyahs) || 5;
+  const k = todayKey();
+  const done = !!(state.dailyWird && state.dailyWird[k]);
+  return `
+    <div class="card">
+      <div class="section-title">📿 الورد اليومي</div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem">هدف اليوم: تلاوة حوالي <strong>${n}</strong> آيات مع تدبّر</p>
+      <button class="btn ${done ? 'btn-ghost' : 'btn-primary'} btn-sm" style="width:100%" onclick="completeDailyWird()">
+        ${done ? '✓ تم إنجاز ورد اليوم' : 'تعليم الورد منجزاً (+10)'}
+      </button>
+    </div>`;
+};
+
+window.completeDailyWird = function () {
+  if (!state.dailyWird) state.dailyWird = {};
+  const k = todayKey();
+  if (state.dailyWird[k]) { showToast('ورد اليوم مسجّل مسبقاً'); return; }
+  state.dailyWird[k] = true;
+  addPoints(10, 'ورد-يومي');
+  saveState();
+  showToast('تقبّل الله +10');
+  if (currentView === 'dashboard') renderDashboard();
+};
+
+window.exportWeeklyCertificate = function () {
+  const s = getWeeklyStats();
+  const name = (state.userProfile && state.userProfile.name) || 'المؤمن';
+  const canvas = document.createElement('canvas');
+  canvas.width = 900; canvas.height = 600;
+  const ctx = canvas.getContext('2d');
+  // background
+  const grd = ctx.createLinearGradient(0, 0, 900, 600);
+  grd.addColorStop(0, '#0f766e');
+  grd.addColorStop(1, '#134e4a');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, 900, 600);
+  ctx.strokeStyle = '#5eead4';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(24, 24, 852, 552);
+  ctx.fillStyle = '#ecfdf5';
+  ctx.font = 'bold 42px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('شهادة إنجاز أسبوعية', 450, 120);
+  ctx.font = '28px Arial';
+  ctx.fillText(name, 450, 190);
+  ctx.font = '22px Arial';
+  ctx.fillStyle = '#a7f3d0';
+  ctx.fillText('صلوات الأسبوع: ' + s.prayers, 450, 280);
+  ctx.fillText('أيام السلسلة: ' + s.streak, 450, 320);
+  ctx.fillText('جلسات التلاوة: ' + s.tilawaSessions, 450, 360);
+  ctx.fillText('نقاط الإيمان: ' + s.points, 450, 400);
+  ctx.fillStyle = '#ecfdf5';
+  ctx.font = '18px Arial';
+  ctx.fillText(new Date().toLocaleDateString('ar-EG'), 450, 480);
+  ctx.fillText('المساعد الإيماني — بارك الله فيك', 450, 520);
+  canvas.toBlob(blob => {
+    if (!blob) { showToast('تعذر إنشاء الشهادة'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'shahada-usboo3.png';
+    a.click();
+    showToast('تم تنزيل شهادة الأسبوع');
+  }, 'image/png');
+};
+
+window.toggleFocusMode = function (on) {
+  const v = on != null ? on : !document.body.classList.contains('focus-mode');
+  document.body.classList.toggle('focus-mode', v);
+  if (state.settings) state.settings.focusMode = v;
+  saveState();
+  const badge = document.getElementById('focus-badge');
+  if (v && !badge) {
+    const b = document.createElement('div');
+    b.id = 'focus-badge';
+    b.className = 'focus-badge';
+    b.innerHTML = 'وضع التركيز · <button class="btn btn-ghost btn-sm" style="margin-right:0.4rem" onclick="toggleFocusMode(false)">إلغاء</button>';
+    document.body.prepend(b);
+  } else if (!v && badge) badge.remove();
+  showToast(v ? 'وضع التركيز مفعّل' : 'تم إلغاء التركيز');
+};
+
+window.recordTilawaSession = function () {
+  ensurePlansState();
+  const k = todayKey();
+  if (!state.tilawaStats[k]) state.tilawaStats[k] = { sessions: 0 };
+  state.tilawaStats[k].sessions++;
+  saveState();
+};
+
+
+// ============================================================
+// خريطة التعلم + تحدّي الدقيقة + نجوم + رفيق + شارات
+// ============================================================
+
+const LEARN_PATH = [
+  { id: 'start', icon: '🌱', title: 'البداية', need: null },
+  { id: 'fatiha', icon: '📖', title: 'الفاتحة', need: 'fatiha' },
+  { id: 'prayer3', icon: '🕌', title: '3 أيام صلاة', need: 'prayer3' },
+  { id: 'ikhlas', icon: '✨', title: 'الإخلاص', need: 'ikhlas' },
+  { id: 'streak7', icon: '🔥', title: 'سلسلة 7', need: 'streak7' },
+  { id: 'tilawa10', icon: '🎙️', title: '10 تلاوات', need: 'tilawa10' },
+  { id: 'wird5', icon: '📿', title: '5 أوراد', need: 'wird5' },
+  { id: 'master', icon: '🏆', title: 'الملتقى', need: 'master' }
+];
+
+const COMPANION_MORNING = [
+  'صباح الخير — اجعل أول عمل بعد الاستيقاظ ذكراً.',
+  'اليوم فرصة جديدة. ركّز على صلاة واحدة بخشوع.',
+  'ابدأ بآية من الفاتحة بتدبّر قبل أن تنشغل.',
+  'نبتتك الروحية تنتظر سقياً من ذكر أو صلاة.'
+];
+const COMPANION_EVENING = [
+  'مساء الخير — راجع ما أنجزت اليوم بلطف مع نفسك.',
+  'قبل النوم: استغفار وثلاث قلاقل إن استطعت.',
+  'إن فاتك شيء اليوم، الغد بداية أجمل.',
+  'اللهم تقبّل ما كان، وأعن على ما بقي.'
+];
+const RARE_BADGES = [
+  { id: 'first_star', icon: '⭐', title: 'أول نجمة', desc: 'أتقنت آية لأول مرة' },
+  { id: 'path_3', icon: '🗺️', title: 'مسافر', desc: 'وصلت المحطة الثالثة' },
+  { id: 'streak_3', icon: '🔥', title: 'شعلة', desc: 'سلسلة 3 أيام' },
+  { id: 'minute_king', icon: '⏱️', title: 'ملك الدقيقة', desc: 'أكملت تحدّي الدقيقة' },
+  { id: 'fatiha_master', icon: '📖', title: 'حارس الفاتحة', desc: 'نجوم على كل آيات الفاتحة' }
+];
+
+function ensureFunMapState() {
+  if (!state.learnMap) state.learnMap = { position: 0, unlocked: ['start'], badges: [] };
+  if (!state.ayahStars) state.ayahStars = {}; // "1:1" -> true
+  if (!state.tilawaStats) state.tilawaStats = {};
+  if (!state.dailyWird) state.dailyWird = {};
+}
+
+function evalLearnProgress() {
+  ensureFunMapState();
+  const unlocked = new Set(state.learnMap.unlocked || ['start']);
+  unlocked.add('start');
+
+  // fatiha: at least 4 stars on surah 1
+  const fatihaStars = Object.keys(state.ayahStars).filter(k => k.startsWith('1:') && state.ayahStars[k]).length;
+  if (fatihaStars >= 4) unlocked.add('fatiha');
+
+  // prayer 3 days
+  let prayerDays = 0;
+  const now = new Date();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    const k = d.toISOString().slice(0, 10);
+    const log = state.dailyLog && state.dailyLog[k];
+    if (log && log.prayers) {
+      const n = ['fajr','dhuhr','asr','maghrib','isha'].filter(p => log.prayers[p] && log.prayers[p].completed).length;
+      if (n >= 3) prayerDays++;
+    }
+  }
+  if (prayerDays >= 3) unlocked.add('prayer3');
+
+  const ikhlasStars = Object.keys(state.ayahStars).filter(k => k.startsWith('112:') && state.ayahStars[k]).length;
+  if (ikhlasStars >= 3) unlocked.add('ikhlas');
+
+  if ((state.streak && state.streak.current || 0) >= 7) unlocked.add('streak7');
+  if ((state.streak && state.streak.current || 0) >= 3) tryAwardBadge('streak_3');
+
+  let sessions = 0;
+  Object.values(state.tilawaStats || {}).forEach(v => { sessions += (v.sessions || 0); });
+  if (sessions >= 10) unlocked.add('tilawa10');
+
+  const wirdDays = Object.keys(state.dailyWird || {}).length;
+  if (wirdDays >= 5) unlocked.add('wird5');
+
+  if (unlocked.size >= 6) unlocked.add('master');
+
+  state.learnMap.unlocked = [...unlocked];
+  // advance position to highest unlocked sequential
+  let pos = 0;
+  for (let i = 0; i < LEARN_PATH.length; i++) {
+    if (unlocked.has(LEARN_PATH[i].id)) pos = i;
+    else break;
+  }
+  if (pos > (state.learnMap.position || 0)) {
+    state.learnMap.position = pos;
+    playWinSound();
+    showBadgeToast('🗺️', 'تقدّمت على الخريطة!', LEARN_PATH[pos].title);
+  } else {
+    state.learnMap.position = Math.max(state.learnMap.position || 0, pos);
+  }
+  if (pos >= 2) tryAwardBadge('path_3');
+  if (fatihaStars >= 7) tryAwardBadge('fatiha_master');
+  saveState();
+  return pos;
+}
+
+window.renderLearnMap = function () {
+  ensureFunMapState();
+  evalLearnProgress();
+  const pos = state.learnMap.position || 0;
+  const unlocked = new Set(state.learnMap.unlocked || ['start']);
+  const nodes = LEARN_PATH.map((n, i) => {
+    let cls = 'learn-node';
+    if (unlocked.has(n.id) && i <= pos) cls += ' done';
+    if (i === pos) cls += ' current';
+    if (!unlocked.has(n.id) && i > pos) cls += ' locked';
+    if (unlocked.has(n.id) && i < pos) cls += ' done';
+    return `<div class="${cls}" onclick="onLearnNodeClick('${n.id}', ${i})">
+      <div class="orb">${n.icon}</div>
+      <div class="lbl">${n.title}</div>
+    </div>`;
+  }).join('');
+  // player position %
+  const pct = LEARN_PATH.length <= 1 ? 0 : (pos / (LEARN_PATH.length - 1)) * 100;
+  return `
+    <div class="card">
+      <div class="section-title">🗺️ طريق التعلّم</div>
+      <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.5rem">أكمل المهام لتتحرك على الخريطة</p>
+      <div class="learn-map">
+        <div class="learn-map-track">
+          <div class="learn-path-line"></div>
+          <div class="learn-player" id="learn-player" style="left: calc(${pct}% + 8px);">🚶</div>
+          <div class="learn-nodes">${nodes}</div>
+        </div>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);text-align:center">
+        موقعك: <strong style="color:var(--accent-light)">${LEARN_PATH[pos].title}</strong>
+        · شارات: ${(state.learnMap.badges || []).length}
+      </div>
+    </div>`;
+};
+
+window.onLearnNodeClick = function (id, i) {
+  ensureFunMapState();
+  const unlocked = new Set(state.learnMap.unlocked || []);
+  if (!unlocked.has(id) && i > (state.learnMap.position || 0)) {
+    showToast('المحطة مقفلة — أكمل السابقة أولاً');
+    return;
+  }
+  if (id === 'fatiha' || id === 'start') {
+    window._tilawa = window._tilawa || {};
+    window._tilawa.surahId = '1'; window._tilawa.from = 1; window._tilawa.to = 7; window._tilawa.idx = 0;
+    switchView('tilawa');
+  } else if (id === 'ikhlas') {
+    window._tilawa = window._tilawa || {};
+    window._tilawa.surahId = '112'; window._tilawa.from = 1; window._tilawa.to = 4; window._tilawa.idx = 0;
+    switchView('tilawa');
+  } else if (id === 'prayer3') {
+    switchView('tracker');
+  } else if (id === 'tilawa10') {
+    switchView('tilawa');
+  } else if (id === 'wird5') {
+    showToast('أكمل الورد اليومي من الرئيسية');
+  } else {
+    showToast(LEARN_PATH[i].title);
+  }
+};
+
+window.renderCompanionCard = function () {
+  const h = new Date().getHours();
+  const isMorning = h >= 4 && h < 15;
+  const list = isMorning ? COMPANION_MORNING : COMPANION_EVENING;
+  const dayIndex = new Date().getDate() + (isMorning ? 0 : 17);
+  const msg = list[dayIndex % list.length];
+  return `
+    <div class="companion-msg">
+      <strong>${isMorning ? '🌅 رفيق الصباح' : '🌙 رفيق المساء'}</strong><br>${msg}
+    </div>`;
+};
+
+window.renderMinuteChallengeCard = function () {
+  return `
+    <div class="card minute-challenge">
+      <div class="section-title" style="justify-content:center">⏱️ تحدّي الدقيقة</div>
+      <p style="font-size:0.85rem;color:var(--text-secondary)">سبّح أو اقرأ ما تيسّر لمدة 60 ثانية</p>
+      <div class="minute-timer" id="minute-timer">01:00</div>
+      <button class="btn btn-primary btn-sm" id="minute-btn" onclick="startMinuteChallenge()">ابدأ التحدّي</button>
+    </div>`;
+};
+
+window.startMinuteChallenge = function () {
+  if (window._minuteTimer) return;
+  let left = 60;
+  const el = document.getElementById('minute-timer');
+  const btn = document.getElementById('minute-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'جاري...'; }
+  playWinSound(true);
+  window._minuteTimer = setInterval(() => {
+    left--;
+    if (el) el.textContent = '00:' + String(Math.max(0, left)).padStart(2, '0');
+    if (left <= 0) {
+      clearInterval(window._minuteTimer);
+      window._minuteTimer = null;
+      if (btn) { btn.disabled = false; btn.textContent = 'أعد التحدّي'; }
+      addPoints(12, 'تحدي-دقيقة');
+      tryAwardBadge('minute_king');
+      playWinSound();
+      showBadgeToast('⏱️', 'أحسنت!', 'أكملت تحدّي الدقيقة +12');
+      if (typeof evalLearnProgress === 'function') evalLearnProgress();
+    }
+  }, 1000);
+};
+
+function playWinSound(soft) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = soft ? 520 : 660;
+    o.type = 'sine';
+    g.gain.value = 0.0001;
+    g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (soft ? 0.15 : 0.35));
+    o.start(); o.stop(ctx.currentTime + 0.4);
+    if (!soft) {
+      setTimeout(() => {
+        const o2 = ctx.createOscillator();
+        const g2 = ctx.createGain();
+        o2.connect(g2); g2.connect(ctx.destination);
+        o2.frequency.value = 880;
+        o2.type = 'sine';
+        g2.gain.value = 0.0001;
+        g2.gain.exponentialRampToValueAtTime(0.07, ctx.currentTime + 0.02);
+        g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+        o2.start(); o2.stop(ctx.currentTime + 0.35);
+      }, 120);
+    }
+  } catch (_) {}
+}
+
+function tryAwardBadge(id) {
+  ensureFunMapState();
+  if (!state.learnMap.badges) state.learnMap.badges = [];
+  if (state.learnMap.badges.includes(id)) return;
+  state.learnMap.badges.push(id);
+  saveState();
+  const b = RARE_BADGES.find(x => x.id === id);
+  if (b) {
+    playWinSound();
+    showBadgeToast(b.icon, b.title, b.desc);
+    addPoints(15, 'شارة-' + id);
+  }
+}
+
+window.showBadgeToast = function (icon, title, desc) {
+  let el = document.getElementById('badge-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'badge-toast';
+    el.className = 'badge-toast';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<div class="big">${icon}</div><strong>${title}</strong><div style="font-size:0.85rem;margin-top:0.3rem;opacity:0.9">${desc || ''}</div>`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3200);
+};
+
+window.awardAyahStar = function (surahId, ayahN, score) {
+  if (score < 75) return;
+  ensureFunMapState();
+  const key = String(surahId) + ':' + String(ayahN);
+  const was = !!state.ayahStars[key];
+  state.ayahStars[key] = true;
+  saveState();
+  if (!was) {
+    tryAwardBadge('first_star');
+    playWinSound();
+    showToast('⭐ نجمة على الآية ' + ayahN);
+  }
+  if (typeof evalLearnProgress === 'function') evalLearnProgress();
+};
+
+window.renderAyahStarsBar = function (surahId, from, to) {
+  ensureFunMapState();
+  let chips = '';
+  for (let n = from; n <= to; n++) {
+    const key = String(surahId) + ':' + n;
+    if (state.ayahStars[key]) chips += `<span class="ayah-star-chip">⭐ ${n}</span>`;
+  }
+  if (!chips) return '';
+  return `<div class="ayah-stars-row">${chips}</div>`;
+};
+
+// Echo mode: play then wait for user
+window.tilawaEchoMode = false;
+
+window.toggleEchoMode = function () {
+  window.tilawaEchoMode = !window.tilawaEchoMode;
+  showToast(window.tilawaEchoMode ? 'وضع «ردّد بعد القارئ» مفعّل' : 'تم إيقاف الردّ بعد القارئ');
+  if (typeof renderTilawaTeacher === 'function') renderTilawaTeacher();
+};
+
+
+// قصار أوفلاين + معاني مختصرة
+const OFFLINE_SHORT_SURAHS = {
+  1: {
+    name: 'الفاتحة',
+    ayahs: [
+      { n: 1, t: 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ', m: 'أبدأ باسم الله الرحمن الرحيم' },
+      { n: 2, t: 'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ', m: 'الثناء كله لله رب العالمين' },
+      { n: 3, t: 'ٱلرَّحْمَٰنِ ٱلرَّحِيمِ', m: 'واسع الرحمة بخلقه' },
+      { n: 4, t: 'مَٰلِكِ يَوْمِ ٱلدِّينِ', m: 'مالك يوم الجزاء' },
+      { n: 5, t: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', m: 'نعبدك وحدك ونستعين بك وحدك' },
+      { n: 6, t: 'ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ', m: 'دلّنا إلى الطريق المستقيم' },
+      { n: 7, t: 'صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ', m: 'طريق من أنعمت عليهم لا المغضوب عليهم ولا الضالين' }
+    ]
+  },
+  103: {
+    name: 'العصر',
+    ayahs: [
+      { n: 1, t: 'وَٱلْعَصْرِ', m: 'أقسم الله بالوقت' },
+      { n: 2, t: 'إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ', m: 'الإنسان في خسارة' },
+      { n: 3, t: 'إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ', m: 'إلا من آمن وعمل صالحاً وتواصوا بالحق والصبر' }
+    ]
+  },
+  108: {
+    name: 'الكوثر',
+    ayahs: [
+      { n: 1, t: 'إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ', m: 'أعطيناك الخير الكثير' },
+      { n: 2, t: 'فَصَلِّ لِرَبِّكَ وَٱنْحَرْ', m: 'فصلّ لربك وانحر' },
+      { n: 3, t: 'إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ', m: 'مبغضك هو المنقطع' }
+    ]
+  },
+  109: {
+    name: 'الكافرون',
+    ayahs: [
+      { n: 1, t: 'قُلْ يَٰٓأَيُّهَا ٱلْكَٰفِرُونَ', m: 'قل يا أيها الكافرون' },
+      { n: 2, t: 'لَآ أَعْبُدُ مَا تَعْبُدُونَ', m: 'لا أعبد ما تعبدون' },
+      { n: 3, t: 'وَلَآ أَنتُمْ عَٰبِدُونَ مَآ أَعْبُدُ', m: 'ولا أنتم عابدون ما أعبد' },
+      { n: 4, t: 'وَلَآ أَنَا۠ عَابِدٌ مَّا عَبَدتُّمْ', m: 'ولا أنا عابد ما عبدتم' },
+      { n: 5, t: 'وَلَآ أَنتُمْ عَٰبِدُونَ مَآ أَعْبُدُ', m: 'ولا أنتم عابدون ما أعبد' },
+      { n: 6, t: 'لَكُمْ دِينُكُمْ وَلِىَ دِينِ', m: 'لكم دينكم ولي دين' }
+    ]
+  },
+  110: {
+    name: 'النصر',
+    ayahs: [
+      { n: 1, t: 'إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ', m: 'إذا جاء نصر الله والفتح' },
+      { n: 2, t: 'وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًا', m: 'ورأيت الناس يدخلون في دين الله أفواجاً' },
+      { n: 3, t: 'فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۢا', m: 'فسبّح بحمد ربك واستغفره إنه تواب' }
+    ]
+  },
+  112: {
+    name: 'الإخلاص',
+    ayahs: [
+      { n: 1, t: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ', m: 'قل هو الله أحد' },
+      { n: 2, t: 'ٱللَّهُ ٱلصَّمَدُ', m: 'الله الذي يُقصد في الحوائج' },
+      { n: 3, t: 'لَمْ يَلِدْ وَلَمْ يُولَدْ', m: 'لم يلد ولم يولد' },
+      { n: 4, t: 'وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ', m: 'وليس له مثيل أحد' }
+    ]
+  },
+  113: {
+    name: 'الفلق',
+    ayahs: [
+      { n: 1, t: 'قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ', m: 'قل أعوذ برب الصبح' },
+      { n: 2, t: 'مِن شَرِّ مَا خَلَقَ', m: 'من شر ما خلق' },
+      { n: 3, t: 'وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ', m: 'ومن شر الليل إذا دخل' },
+      { n: 4, t: 'وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ', m: 'ومن شر السواحر' },
+      { n: 5, t: 'وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ', m: 'ومن شر حاسد إذا حسد' }
+    ]
+  },
+  114: {
+    name: 'الناس',
+    ayahs: [
+      { n: 1, t: 'قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ', m: 'قل أعوذ برب الناس' },
+      { n: 2, t: 'مَلِكِ ٱلنَّاسِ', m: 'ملك الناس' },
+      { n: 3, t: 'إِلَٰهِ ٱلنَّاسِ', m: 'إله الناس' },
+      { n: 4, t: 'مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ', m: 'من شر الوسواس الخناس' },
+      { n: 5, t: 'ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ', m: 'الذي يوسوس في الصدور' },
+      { n: 6, t: 'مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ', m: 'من الجن والناس' }
+    ]
+  }
+};
+
+function mergeOfflineSurahs() {
+  if (typeof QURAN_SAMPLE === 'undefined') return;
+  Object.keys(OFFLINE_SHORT_SURAHS).forEach(id => {
+    const full = OFFLINE_SHORT_SURAHS[id];
+    const cur = QURAN_SAMPLE[id];
+    if (!cur || !cur.ayahs || cur.ayahs.length < full.ayahs.length || (cur.ayahs[0] && !cur.ayahs[0].m)) {
+      QURAN_SAMPLE[id] = JSON.parse(JSON.stringify(full));
+    }
+  });
+}
+
+
+// ============================================================
+// PWA + إشعارات + هدف يومي + سجل نجوم + استقرار
+// ============================================================
+
+window._deferredInstall = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window._deferredInstall = e;
+  const b = document.getElementById('btn-install-pwa');
+  if (b) b.style.display = 'block';
+});
+
+window.installPWA = async function () {
+  if (!window._deferredInstall) {
+    showToast('من المتصفح: قائمة ⋮ ثم «إضافة إلى الشاشة الرئيسية»');
+    return;
+  }
+  window._deferredInstall.prompt();
+  const { outcome } = await window._deferredInstall.userChoice;
+  showToast(outcome === 'accepted' ? 'تم التثبيت ✓' : 'تم الإلغاء');
+  window._deferredInstall = null;
+};
+
+function safeCall(fn, fallbackMsg) {
+  try { return fn(); }
+  catch (e) {
+    console.warn(e);
+    showToast(fallbackMsg || ('خطأ: ' + (e.message || 'غير متوقع')));
+    return null;
+  }
+}
+
+window.renderDailyGoalCard = function () {
+  if (!state.dailyGoal) state.dailyGoal = {};
+  const k = todayKey();
+  const g = state.dailyGoal[k] || { type: 'wird', done: false };
+  const labels = {
+    prayer: '🕌 أتمّ الصلوات الخمس',
+    wird: '📿 أنجز الورد اليومي',
+    minute: '⏱️ تحدّي الدقيقة',
+    tilawa: '🎓 جلسة تلاوة واحدة'
+  };
+  return `
+    <div class="card">
+      <div class="section-title">🎯 هدف اليوم (واحد فقط)</div>
+      <select id="daily-goal-type" class="select-styled" style="width:100%;margin-bottom:0.5rem" onchange="setDailyGoalType(this.value)" ${g.done ? 'disabled' : ''}>
+        ${Object.entries(labels).map(([v,l]) => `<option value="${v}" ${g.type===v?'selected':''}>${l}</option>`).join('')}
+      </select>
+      <button class="btn ${g.done?'btn-ghost':'btn-primary'} btn-sm" style="width:100%" onclick="completeDailyGoal()">
+        ${g.done ? '✓ تم إنجاز هدف اليوم' : 'عدّ الهدف منجزاً (+20)'}
+      </button>
+    </div>`;
+};
+
+window.setDailyGoalType = function (type) {
+  const k = todayKey();
+  if (!state.dailyGoal) state.dailyGoal = {};
+  state.dailyGoal[k] = { type, done: false };
+  saveState();
+};
+
+window.completeDailyGoal = function () {
+  const k = todayKey();
+  if (!state.dailyGoal) state.dailyGoal = {};
+  if (!state.dailyGoal[k]) state.dailyGoal[k] = { type: 'wird', done: false };
+  if (state.dailyGoal[k].done) { showToast('هدف اليوم مكتمل'); return; }
+  state.dailyGoal[k].done = true;
+  addPoints(20, 'هدف-يومي');
+  if (typeof playWinSound === 'function') playWinSound();
+  saveState();
+  showToast('تقبّل الله — هدف اليوم +20');
+  if (currentView === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+};
+
+window.renderStarsLogCard = function () {
+  if (!state.ayahStars) state.ayahStars = {};
+  const keys = Object.keys(state.ayahStars).filter(k => state.ayahStars[k]);
+  const total = keys.length;
+  // group by surah
+  const byS = {};
+  keys.forEach(k => {
+    const [s, a] = k.split(':');
+    if (!byS[s]) byS[s] = [];
+    byS[s].push(a);
+  });
+  const names = { '1': 'الفاتحة', '103': 'العصر', '108': 'الكوثر', '109': 'الكافرون', '110': 'النصر', '112': 'الإخلاص', '113': 'الفلق', '114': 'الناس' };
+  let rows = Object.entries(byS).map(([s, arr]) => {
+    const name = (QURAN_SAMPLE[s] && QURAN_SAMPLE[s].name) || names[s] || ('سورة ' + s);
+    return `<div style="font-size:0.82rem;margin:0.25rem 0"><strong>${name}</strong>: ⭐ ${arr.sort((a,b)=>a-b).join('، ')}</div>`;
+  }).join('') || '<p style="font-size:0.85rem;color:var(--text-secondary)">لا نجوم بعد — سجّل تلاوة ناجحة</p>';
+  return `
+    <div class="card">
+      <div class="section-title">⭐ سجل نجوم التلاوة</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.4rem">المجموع: ${total} آية متقنة</div>
+      ${rows}
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:0.5rem" onclick="switchView('tilawa')">متابعة التلاوة</button>
+    </div>`;
+};
+
+window.renderInstallCard = function () {
+  return `
+    <div class="card" style="text-align:center">
+      <div class="section-title" style="justify-content:center">📲 تثبيت التطبيق</div>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.5rem">ثبّته على الشاشة الرئيسية لفتح أسرع وعمل أفضل دون اتصال</p>
+      <button class="btn btn-primary btn-sm" id="btn-install-pwa" onclick="installPWA()" style="width:100%">تثبيت إيماني</button>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:0.35rem" onclick="requestNotifPermission()">🔔 تفعيل إشعارات الصلاة</button>
+    </div>`;
+};
+
+// Enhanced prayer notifications: at time + 5 min before
+window.schedulePrayerNotifications = function () {
+  if (!('Notification' in window)) return;
+  clearInterval(window._prayerNotifTimer);
+  const arNames = { Fajr: 'الفجر', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' };
+  window._prayerNotifTimer = setInterval(() => {
+    try {
+      if (!prayerTimes || (state.settings && state.settings.adhanEnabled === false)) return;
+      if (Notification.permission !== 'granted') return;
+      const now = new Date();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      ['Fajr','Dhuhr','Asr','Maghrib','Isha'].forEach(k => {
+        if (typeof parseTimeToMinutes !== 'function') return;
+        const t = parseTimeToMinutes(prayerTimes[k]);
+        if (t == null || isNaN(t)) return;
+        // 5 min before
+        if (t - nowMin === 5) {
+          const fk = 'pre_' + todayKey() + '_' + k;
+          if (sessionStorage.getItem(fk)) return;
+          sessionStorage.setItem(fk, '1');
+          new Notification('إيماني', { body: 'تبقّى 5 دقائق على صلاة ' + arNames[k], tag: fk, silent: false });
+        }
+        if (t === nowMin) {
+          const fk = 'now_' + todayKey() + '_' + k;
+          if (sessionStorage.getItem(fk)) return;
+          sessionStorage.setItem(fk, '1');
+          new Notification('إيماني — حان الوقت', { body: 'حان وقت صلاة ' + arNames[k], tag: fk });
+          if (typeof playAdhan === 'function') playAdhan();
+        }
+      });
+    } catch (e) { console.warn('notif tick', e); }
+  }, 30000);
+};
+
+
+// ============================================================
+// المدرب الإيماني الشخصي (AI + محلي)
+// ============================================================
+
+const COACH_SITUATIONS = [
+  { id: 'lazy_prayer', label: 'تكاسل عن الصلاة', prompt: 'أشعر بالتكاسل عن الصلاة، أرشدني بلطف عملياً لخطوات قصيرة اليوم.' },
+  { id: 'anger', label: 'غضب وانفعال', prompt: 'أغضب بسرعة في يومي، أريد نصيحة إيمانية وعملية للسيطرة على الغضب.' },
+  { id: 'anxiety', label: 'همّ وقلق', prompt: 'أشعر بقلق وهمّ، ذكّرني بما يثبت القلب من القرآن والسنة مع خطوات عملية بسيطة.' },
+  { id: 'family', label: 'خلاف عائلي', prompt: 'عندي توتر مع أحد أفراد الأسرة، كيف أتصرف بأخلاق إسلامية عملية؟' },
+  { id: 'work', label: 'ضغط عمل/دراسة', prompt: 'ضغط العمل أو الدراسة يؤثر على ديني وراحتي، نظم لي أولويات اليوم.' },
+  { id: 'phone', label: 'إدمان الجوال', prompt: 'أضيع وقتاً كثيراً على الجوال، ساعدني بخطة واقعية لساعة واحدة أفضل.' },
+  { id: 'ghafla', label: 'غفلة عن الذكر', prompt: 'قلّ ذكري لله، اقترح أوراداً خفيفة ثابتة تناسب المبتدئ.' },
+  { id: 'sin_regret', label: 'ندم على ذنب', prompt: 'أندم على ذنب، كيف أتوب توبة صادقة عملياً دون يأس؟' }
+];
+
+const COACH_LOCAL_TIPS = {
+  lazy_prayer: 'ابدأ بفرضية واحدة في وقتها اليوم فقط. حضّر المكان والوضوء مبكراً بدقائق. اجعل بعد الصلاة ذكراً قصيراً (33 تسبيحة). لا تؤجّل «كل الصلوات» دفعة واحدة.',
+  anger: 'إذا غضبت: اصمت، توضأ إن استطعت، وغيّر وضعك (اجلس إن كنت واقفاً). ادعُ: «أعوذ بالله من الشيطان الرجيم». أجّل الرد على الرسالة الغاضبة 10 دقائق.',
+  anxiety: 'اقرأ آية الكرسي أو المعوذات بتدبّر. اكتب الهمّ في سطرين ثم ادعُ بما يخصه. قم بمهمة صغيرة منجزة (ترتيب مكان/صدقة) لكسر الحلقة.',
+  family: 'اختر وقت هدوء، ابدأ بجملة لطيفة لا بلوم. اسمع أكثر مما تتكلم. ادعُ لهم في ظهر الغيب. صلّح قدر المستطاع ولو برسالة قصيرة.',
+  work: 'حدد 3 مهام فقط لليوم. اربط كل استراحة بذكر قصير. لا تؤخر صلاة عن وقتها بسبب «خمس دقائق». ساعة تركيز أفضل من ثلاث مشتتة.',
+  phone: 'ضع الجوال في غرفة أخرى لـ 25 دقيقة. أغلق إشعارات غير ضرورية. استبدل أول ربع ساعة بعد الاستيقاظ بورد لا بتصفح.',
+  ghafla: 'اربط الذكروالروتين: بعد كل صلاة 10 استغفار. على الطريق: لا إله إلا الله. قبل النوم: 3 قلاقل. الثبات على قليل خير من انقطاع كثير.',
+  sin_regret: 'التوبة: إقلاع، ندم، عزم على عدم العودة، وردّ الحق إن وُجد. أكثر من الاستغفار والعمل الصالح. لا يأس من رحمة الله، ولا تتهاون فتسوّف.'
+};
+
+function ensureCoachState() {
+  if (!state.coach) state.coach = { messages: [], lastBrief: null, lastBriefDate: null };
+  if (!Array.isArray(state.coach.messages)) state.coach.messages = [];
+}
+
+function coachContextSummary() {
+  const log = typeof getTodayLog === 'function' ? getTodayLog() : null;
+  let prayers = 0;
+  if (log && log.prayers) {
+    prayers = ['fajr','dhuhr','asr','maghrib','isha'].filter(k => log.prayers[k] && log.prayers[k].completed).length;
+  }
+  const streak = (state.streak && state.streak.current) || 0;
+  const points = (state.userProfile && state.userProfile.points) || 0;
+  const stars = state.ayahStars ? Object.keys(state.ayahStars).filter(k => state.ayahStars[k]).length : 0;
+  const h = new Date().getHours();
+  const period = h < 12 ? 'صباح' : h < 17 ? 'ظهر/عصر' : h < 21 ? 'مساء' : 'ليل';
+  const name = (state.userProfile && state.userProfile.name) || 'المؤمن';
+  return { name, prayers, streak, points, stars, period };
+}
+
+function buildCoachSystemPrompt() {
+  const c = coachContextSummary();
+  return `أنت مدرب إيماني شخصي مسلم: مختصر، عملي، مشجّع، غير متشدد في غير موضع التشديد، ولا تفتي في قضايا كبرى معقدة—وجّه لسؤال أهل العلم عند الحاجة.
+السياق: الاسم ${c.name}، الوقت ${c.period}، صلوات اليوم ${c.prayers}/5، سلسلة ${c.streak} يوم، نقاط ${c.points}، نجوم تلاوة ${c.stars}.
+أجب بالعربية الفصحى المبسطة. استخدم 4–8 أسطر أو نقاط قصيرة. اختم بخطوة واحدة واضحة لليوم.`;
+}
+
+window.renderCoach = function () {
+  ensureCoachState();
+  const c = coachContextSummary();
+  const hasKey = typeof getGeminiKey === 'function' && !!getGeminiKey();
+  const chips = COACH_SITUATIONS.map(s =>
+    `<button type="button" onclick="coachAskSituation('${s.id}')">${s.label}</button>`
+  ).join('');
+
+  const msgs = (state.coach.messages || []).slice(-12).map(m =>
+    `<div class="coach-bubble ${m.role === 'user' ? 'user' : 'ai'}">${escapeCoachHtml(m.text)}</div>`
+  ).join('') || `<div class="coach-bubble ai">السلام عليكم ${c.name} 👋<br>أنا مدربك الإيماني. اختر موقفاً سريعاً أو اكتب ما يشغلك في دينك أو يومك.</div>`;
+
+  document.getElementById('view-coach').innerHTML = `
+    <div class="card">
+      <div class="section-title">🧭 المدرب الإيماني الشخصي</div>
+      <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.5rem">
+        توجيهات عملية للدين والحياة اليومية
+        ${hasKey ? '· <span style="color:#86efac">Gemini مفعّل</span>' : '· <span style="color:#fde68a">بدون مفتاح: نصائح محلية · أضف Gemini من الإعدادات لردود أذكى</span>'}
+      </p>
+      <button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:0.5rem" onclick="coachDailyBrief()">✨ ملخص يومي شخصي</button>
+      <div class="coach-brief" id="coach-brief">${state.coach.lastBrief && state.coach.lastBriefDate === todayKey() ? escapeCoachHtml(state.coach.lastBrief) : 'اضغط «ملخص يومي شخصي» لخطة تناسب يومك الآن.'}</div>
+    </div>
+    <div class="card">
+      <div class="section-title">مواقف سريعة</div>
+      <div class="coach-chips">${chips}</div>
+      <div class="coach-chat" id="coach-chat">${msgs}</div>
+      <div class="coach-input-row">
+        <textarea id="coach-input" placeholder="اكتب سؤالك أو موقفك..." rows="2"></textarea>
+        <button class="btn btn-primary btn-sm" onclick="coachSend()">إرسال</button>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:0.45rem" onclick="coachClearChat()">مسح المحادثة</button>
+    </div>
+    <p class="ai-disclaimer">المدرب مساعد تربوي عام وليس بديلاً عن فتوى عالم أو علاج متخصص.</p>
+  `;
+  const chat = document.getElementById('coach-chat');
+  if (chat) chat.scrollTop = chat.scrollHeight;
+};
+
+function escapeCoachHtml(t) {
+  return String(t || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+window.coachClearChat = function () {
+  ensureCoachState();
+  state.coach.messages = [];
+  saveState();
+  renderCoach();
+};
+
+window.coachAskSituation = function (id) {
+  const s = COACH_SITUATIONS.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('coach-input').value = s.prompt;
+  coachSend(s.id);
+};
+
+window.coachSend = async function (situationId) {
+  ensureCoachState();
+  const input = document.getElementById('coach-input');
+  const text = (input && input.value || '').trim();
+  if (!text) { showToast('اكتب شيئاً أولاً'); return; }
+  if (input) input.value = '';
+  state.coach.messages.push({ role: 'user', text, at: Date.now() });
+  saveState();
+  renderCoach();
+
+  // typing placeholder
+  const chat = document.getElementById('coach-chat');
+  if (chat) {
+    const tip = document.createElement('div');
+    tip.className = 'coach-bubble ai';
+    tip.id = 'coach-typing';
+    tip.textContent = 'جاري التفكير...';
+    chat.appendChild(tip);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  let reply = '';
+  try {
+    if (typeof getGeminiKey === 'function' && getGeminiKey()) {
+      reply = await callGeminiText(text, buildCoachSystemPrompt());
+    } else if (situationId && COACH_LOCAL_TIPS[situationId]) {
+      reply = COACH_LOCAL_TIPS[situationId];
+    } else {
+      // keyword local fallback
+      const low = text;
+      if (/صل|كسل|صلاه|صلاة/.test(low)) reply = COACH_LOCAL_TIPS.lazy_prayer;
+      else if (/غضب|انفعال|عصبي/.test(low)) reply = COACH_LOCAL_TIPS.anger;
+      else if (/قلق|هم|خوف|حزن/.test(low)) reply = COACH_LOCAL_TIPS.anxiety;
+      else if (/أهل|زوج|عائلة|أم|أب/.test(low)) reply = COACH_LOCAL_TIPS.family;
+      else if (/عمل|دراس|امتحان|ضغط/.test(low)) reply = COACH_LOCAL_TIPS.work;
+      else if (/جوال|هاتف|تليفون|سوشيال|يوتيوب/.test(low)) reply = COACH_LOCAL_TIPS.phone;
+      else if (/ذنب|معصية|توبة|ندم/.test(low)) reply = COACH_LOCAL_TIPS.sin_regret;
+      else reply = COACH_LOCAL_TIPS.ghafla + '\n\n(لتفاصيل أذكى: أضف مفتاح Gemini من الإعدادات)';
+    }
+  } catch (e) {
+    reply = 'تعذر الاتصال بالذكاء. هذا بديل محلي:\n' + (situationId && COACH_LOCAL_TIPS[situationId] || COACH_LOCAL_TIPS.ghafla);
+  }
+
+  reply = (reply || '').trim().slice(0, 1200);
+  state.coach.messages.push({ role: 'ai', text: reply, at: Date.now() });
+  // keep last 20
+  if (state.coach.messages.length > 20) state.coach.messages = state.coach.messages.slice(-20);
+  saveState();
+  if (typeof addPoints === 'function') addPoints(2, 'مدرب');
+  renderCoach();
+};
+
+window.coachDailyBrief = async function () {
+  ensureCoachState();
+  const c = coachContextSummary();
+  showToast('جاري إعداد ملخصك...');
+  let brief = '';
+  const localBrief = () => {
+    const lines = [
+      `${c.name} — ${c.period} الخير.`,
+      `صلوات اليوم: ${c.prayers}/5 · السلسلة: ${c.streak} · نجوم التلاوة: ${c.stars}.`
+    ];
+    if (c.prayers < 5) lines.push('أولوية اليوم: صلاة واحدة قادمة في أول وقتها بخشوع دقيقة إضافية.');
+    else lines.push('أحسنت على الصلوات — ثبّت ورداً خفيفاً بعد العشاء.');
+    if (c.streak === 0) lines.push('ابدأ سلسلة اليوم بفعل واحد فقط (صلاة أو ذكر).');
+    else if (c.streak < 3) lines.push('السلسلة في بدايتها — لا تكسرها اليوم.');
+    else lines.push('سلسلتك جيدة — احمِها بورد ثابت قصير.');
+    lines.push('خطوة واحدة الآن: افتح معلّم التلاوة لآية واحدة أو تحدّي الدقيقة.');
+    return lines.join('\n');
+  };
+  try {
+    if (typeof getGeminiKey === 'function' && getGeminiKey()) {
+      brief = await callGeminiText(
+        `اكتب ملخصاً شخصياً وتحفيزياً ليومي كمدرب إيماني (6 أسطر كحد أقصى) مع خطوة واحدة عملية الآن. لا تستخدم عناوين طويلة.`,
+        buildCoachSystemPrompt()
+      );
+    }
+  } catch (e) {
+    console.warn(e);
+  }
+  if (!brief) brief = localBrief();
+  state.coach.lastBrief = brief.trim().slice(0, 900);
+  state.coach.lastBriefDate = todayKey();
+  saveState();
+  if (typeof addPoints === 'function') addPoints(3, 'ملخص-مدرب');
+  renderCoach();
+  showToast('تم تحديث ملخصك');
+};
+
 async function init() {
+  try { if (typeof mergeOfflineSurahs === 'function') mergeOfflineSurahs(); } catch(_) {}
+
+  // Upgrade state from IndexedDB if richer, load cached Quran
+  try {
+    if (typeof loadStateAsync === 'function') {
+      state = await loadStateAsync();
+    }
+    if (typeof loadAllQuranFromIDB === 'function') await loadAllQuranFromIDB();
+  } catch (e) { console.warn('async load', e); }
+  
+  try {
+    const s = localStorage.getItem('tilawaStyle');
+    const l = localStorage.getItem('tilawaLayout');
+    if (s) window._tilawa.style = s;
+    if (l) window._tilawa.layout = l;
+  } catch (_) {}
+
   if (typeof ensureFunState === 'function') ensureFunState();
+  if (typeof ensurePlansState === 'function') ensurePlansState();
+  if (typeof applyKidsMode === 'function') applyKidsMode();
+  if (typeof ensureFunMapState === 'function') ensureFunMapState();
+  if (typeof evalLearnProgress === 'function') evalLearnProgress();
   if (typeof ensureLeaderboardState === 'function') ensureLeaderboardState();
   // Theme
   applyTheme(state.userProfile.theme || 'glassmorphic');
@@ -4879,6 +8062,8 @@ async function init() {
   setTimeout(() => { if (typeof showStorageBannerIfNeeded === 'function') showStorageBannerIfNeeded(); }, 1800);
 
   setInterval(detectTimePeriod, 60000);
+  setInterval(ensureFreshPrayerTimes, 60000);
+  ensureFreshPrayerTimes();
 
   // Plant decay
   decayPlantIfNeeded();
@@ -4955,14 +8140,9 @@ document.addEventListener('DOMContentLoaded', init);
 
   // Service Worker (best-effort; may be restricted on file://)
   if ('serviceWorker' in navigator) {
-    const swCode = `const CACHE_NAME = 'faith-ethics-v1';
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './app.js',
-  './manifest.json'
-];
+    const swCode = `const CACHE_NAME = 'iman-pwa-v3';
+const ASSETS = [self.registration.scope];
+
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
